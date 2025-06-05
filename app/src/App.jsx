@@ -6,6 +6,7 @@ import viteLogo from '/vite.svg'
 function App() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
 
@@ -40,7 +41,7 @@ function App() {
     const res = await fetch("/api/addExpense", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, amount: parseFloat(amount) }),
+      body: JSON.stringify({ title, amount: parseFloat(amount), category }),
     });
 
     const data = await res.json();
@@ -77,8 +78,9 @@ function App() {
               onChange={() => handleCheckboxChange(expense.id)}
             />
             <div className="font-medium">{expense.title}</div>
+            <div className='font-medium'>Rp.{expense.amount},-</div>
             <div className="text-sm text-gray-600">
-              {expense.category} | ${expense.amount} | {expense.date}
+              {expense.category} | {expense.date}
             </div>
           </li>
         ))}
@@ -95,6 +97,13 @@ function App() {
           placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
           required
         />
         <button onClick={handleSubmit}>Add Expense</button>

@@ -2,7 +2,7 @@ import { supabase } from "./utils/supabase.js";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { title, amount } = req.body;
+    const { title, amount, category } = req.body;
     console.log('received, trying to upload to supabase');
 
     const { data, error } = await supabase
@@ -10,8 +10,8 @@ export default async function handler(req, res) {
         .insert([
           {
             title: title,
-            category: "test",
             amount: amount,
+            category: category,
           }
         ]);
 
