@@ -5,5 +5,8 @@ import 'dotenv/config';
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
+console.log("SUPABASE URL = ", SUPABASE_URL);
+console.log("SUPABASE KEY = ", SUPABASE_KEY);
+
 // Initialize Supabase client
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
