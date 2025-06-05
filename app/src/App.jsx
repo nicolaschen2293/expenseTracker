@@ -10,17 +10,21 @@ function App() {
   const [selectedExpenses, setSelectedExpenses] = useState([]);
 
   useEffect(() => {
-    async function fetchExpenses() {
-      const res = await fetch("/api/getExpenses", {
-        method:"GET"
-      });
-      const data = await res.json();
-      setExpenses(data);
-    }
-
     fetchExpenses();
     console.log(expenses)
   }, []);
+
+  useEffect(() => {
+    console.log(selectedExpenses)
+  }, [selectedExpenses])
+
+  async function fetchExpenses() {
+    const res = await fetch("/api/getExpenses", {
+      method:"GET"
+    });
+    const data = await res.json();
+    setExpenses(data);
+  }
 
   const handleCheckboxChange = (id) => {
     setSelectedExpenses((prevSelected) =>
@@ -28,8 +32,6 @@ function App() {
         ? prevSelected.filter((eid) => eid !== id)
         : [...prevSelected, id]
     );
-
-    console.log(selectedExpenses)
   };
 
   const handleSubmit = async (e) => {
@@ -43,7 +45,24 @@ function App() {
 
     const data = await res.json();
     console.log(data);
+
+    if (!data.error) await fetchExpenses();
   };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+
+    const res = await fetch("/api/deleteExpense", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(selectedExpenses),
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    if (!data.error) await fetchExpenses();
+  }
 
   return (
     <div className="flex flex-col items-center min-h-screen content-center gap-2">
@@ -79,6 +98,7 @@ function App() {
           required
         />
         <button onClick={handleSubmit}>Add Expense</button>
+        {selectedExpenses && <button onClick={handleDelete}>Delete Selected</button>}
     </div>
   )
 }
