@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { supabase } from '../../utils/supabase';
 
 function ExpenseListPage() {
   const [title, setTitle] = useState("");
@@ -7,18 +8,39 @@ function ExpenseListPage() {
   const [expenses, setExpenses] = useState([]);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
 
-  useEffect(() => {
-    fetchExpenses();
-    console.log(expenses)
-  }, []);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    console.log(selectedExpenses)
-  }, [selectedExpenses])
+    async function checkToken() {
+      setToken(await getToken());
+    }
+
+    checkToken();
+  }, [])
+
+  useEffect(() => {
+    console.log('Session: ', token);
+  }, [token])
+
+  useEffect(() => {
+    async function listExpenses() {
+      await fetchExpenses();
+    }
+    
+    if (token) listExpenses();
+  }, [token]);
+
+  async function getToken() {
+    const { data } = await supabase.auth.getSession();
+    return data.session?.access_token;
+  }
 
   async function fetchExpenses() {
     const res = await fetch("/api/getExpenses", {
-      method:"GET"
+      method:"GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     const data = await res.json();
     setExpenses(data);
@@ -37,7 +59,10 @@ function ExpenseListPage() {
 
     const res = await fetch("/api/addExpense", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json", 
+        Authorization: `Bearer ${token}` 
+      },
       body: JSON.stringify({ title, amount: parseFloat(amount), category }),
     });
 
@@ -52,7 +77,7 @@ function ExpenseListPage() {
 
     const res = await fetch("/api/deleteExpense", {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(selectedExpenses),
     });
 

@@ -1,26 +1,32 @@
 import { supabase } from './utils/supabase.js';
 
 export default async function handler(req, res) {
+
+  // Verify Method
   if (req.method !== 'DELETE') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const selectedExpenses = req.body;
-  // const { id, user_id } = req.body;
+  // 1. Extract token
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ error: "No token provided" });
 
-  // if (!id || !user_id) {
-  //   return res.status(400).json({ error: 'Missing id or user_id' });
-  // }
+  // 2. Authenticate user
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+  if (authError || !user) return res.status(401).json({ error: "Unauthorized" });
+
+  // 3. Delete the selected expenses from Supabase
+  const selectedExpenses = req.body;
 
   const { error } = await supabase
     .from('expenses')
     .delete()
     .in('id', selectedExpenses)
-    //.eq('user_id', user_id); // to enforce RLS
+    .eq('user_id', user.id);
 
   if (error) {
     return res.status(500).json({ error: error.message });
   }
 
-  return res.status(200).json({ message: 'Expense deleted successfully' });
+  return res.status(200).json({ message: 'Expense(s) deleted successfully' });
 }
