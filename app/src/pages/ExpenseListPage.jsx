@@ -8,7 +8,12 @@ function ExpenseListPage() {
   const [category, setCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
+  const [openAddExpense, setOpenAddExpense] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [filter, setFilter] = useState("");
+  const categoryOptions = [
+    "Food", "Transport", "Bills", "Shopping", "Health", "Entertainment", "Luxury", "Other"
+  ];
 
   const navigate = useNavigate();
 
@@ -22,13 +27,13 @@ function ExpenseListPage() {
     checkToken();
   }, [])
 
-  useEffect(() => {
-    console.log('Session: ', token);
-  }, [token])
+  // useEffect(() => {
+  //   console.log('Session: ', token);
+  // }, [token])
 
   useEffect(() => {
     async function listExpenses() {
-      await fetchExpenses();
+      await fetchExpenses(null);
     }
     
     if (token) listExpenses();
@@ -39,8 +44,18 @@ function ExpenseListPage() {
     return data.session?.access_token;
   }
 
-  async function fetchExpenses() {
-    const res = await fetch("/api/getExpenses", {
+  async function fetchExpenses(listFilter) {
+    let url;
+
+    if (listFilter) {
+      url = `/api/getExpenses?category=${encodeURIComponent(listFilter)}`
+      console.log("Filtering by ", listFilter);
+      console.log("url = ", url);
+    } else {
+      url = "/api/getExpenses";
+    }
+
+    const res = await fetch(url, {
       method:"GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -73,8 +88,8 @@ function ExpenseListPage() {
     const data = await res.json();
     console.log(data);
 
-    if (!data.error) await fetchExpenses();
-    if (openModal) setOpenModal(false);
+    if (!data.error) await fetchExpenses(null);
+    if (openAddExpense) setOpenAddExpense(false);
     setTitle("");
     setAmount("");
     setCategory("");
@@ -92,7 +107,7 @@ function ExpenseListPage() {
     const data = await res.json();
     console.log(data);
 
-    if (!data.error) await fetchExpenses();
+    if (!data.error) await fetchExpenses(null);
   }
 
   const handleLogOut = async () => {
@@ -107,6 +122,17 @@ function ExpenseListPage() {
     }
   }
 
+  const handleFilter = async (newFilter) => {
+    if (newFilter === "None") {
+      await fetchExpenses(null);
+    } else {
+      setFilter(newFilter);
+      await fetchExpenses(newFilter);
+    }
+    setFilter("");
+    setOpenFilter(false);
+  }
+
   const goToStatistics = () => {
     navigate('/statistics');
   }
@@ -115,6 +141,7 @@ function ExpenseListPage() {
     <div className="flex flex-col items-center min-h-screen content-center gap-2">
       <h1 className="text-blue-500 font-extrabold text-4xl">Expense Tracker</h1>
       <h2 className="text-xl font-bold mb-2">Recent Expenses</h2>
+      <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
       <ul className="space-y-2">
         {expenses.map((expense) => (
           <li key={expense.id} className="border p-2 rounded-md">
@@ -131,7 +158,7 @@ function ExpenseListPage() {
           </li>
         ))}
       </ul>
-        {openModal && (
+        {openAddExpense && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
             <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
               <input
@@ -156,22 +183,35 @@ function ExpenseListPage() {
                 className='text-blue-700'
                 required
               >
-                <option value="">Select Category</option>
-                <option value="Food">Food</option>
-                <option value="Transport">Transport</option>
-                <option value="Bills">Bills</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Health">Health</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Luxury">Luxury</option>
-                <option value="Other">Other</option>
+                <option value="">None</option>
+                {categoryOptions.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
               <button onClick={handleSubmit} className='bg-green-500'>Add Expense</button>
-              <button onClick={() => setOpenModal(false)} className='bg-red-500'>Cancel</button>
+              <button onClick={() => setOpenAddExpense(false)} className='bg-red-500'>Cancel</button>
             </div>
           </div>
         )}
-        <button onClick={() => setOpenModal(true)} className='bg-green-500'>+</button>
+        {openFilter && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+                <select
+                  value={filter}
+                  onChange={(e) => handleFilter(e.target.value)}
+                  className='text-blue-700'
+                  required
+                >
+                  <option value="">Select Category to Filter List</option>
+                  <option value="None">None</option>
+                  {categoryOptions.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+            </div>
+          </div>
+        )}
+        <button onClick={() => setOpenAddExpense(true)} className='bg-green-500'>+</button>
         {selectedExpenses && <button onClick={handleDelete}>Delete Selected</button>}
         {token && <button className='bg-blue-500' onClick={goToStatistics}>Statistics</button>}
         {token && <button className='bg-red-500' onClick={handleLogOut}>Log Out</button>}

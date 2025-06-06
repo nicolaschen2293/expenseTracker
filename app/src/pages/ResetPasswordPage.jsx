@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../utils/supabase.js';
-import { useNavigate } from 'react-router-dom';
 
 function ResetPasswordPage() {
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Supabase automatically logs in the user from the email link
