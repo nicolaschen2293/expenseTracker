@@ -143,6 +143,7 @@ function ExpenseListPage() {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          className='text-blue-700'
           required
         >
           <option value="">Select Category</option>
