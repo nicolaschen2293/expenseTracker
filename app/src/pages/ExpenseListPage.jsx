@@ -102,6 +102,10 @@ function ExpenseListPage() {
     }
   }
 
+  const goToStatistics = () => {
+    navigate('/statistics');
+  }
+
   return (
     <div className="flex flex-col items-center min-h-screen content-center gap-2">
       <h1 className="text-blue-500 font-extrabold text-4xl">Expense Tracker</h1>
@@ -136,15 +140,24 @@ function ExpenseListPage() {
           onChange={(e) => setAmount(e.target.value)}
           required
         />
-        <input
-          type="text"
-          placeholder="Category"
+        <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           required
-        />
+        >
+          <option value="">Select Category</option>
+          <option value="Food">Food</option>
+          <option value="Transport">Transport</option>
+          <option value="Bills">Bills</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Health">Health</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Luxury">Luxury</option>
+          <option value="Other">Other</option>
+        </select>
         <button onClick={handleSubmit}>Add Expense</button>
         {selectedExpenses && <button onClick={handleDelete}>Delete Selected</button>}
+        {token && <button className='bg-blue-500' onClick={goToStatistics}>Statistics</button>}
         {token && <button className='bg-red-500' onClick={handleLogOut}>Log Out</button>}
     </div>
   )
