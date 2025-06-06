@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabase';
 
 function ExpenseListPage() {
@@ -7,6 +8,8 @@ function ExpenseListPage() {
   const [category, setCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
+
+  const navigate = useNavigate();
 
   const [token, setToken] = useState(null);
 
@@ -87,6 +90,18 @@ function ExpenseListPage() {
     if (!data.error) await fetchExpenses();
   }
 
+  const handleLogOut = async () => {
+    try {
+        const { error } = await supabase.auth.signOut()
+        if (error) throw error
+
+        console.log('Log Out Success!');
+        navigate('/');
+    } catch (err) {
+        console.error("Log Out Error: ", err.message);
+    }
+  }
+
   return (
     <div className="flex flex-col items-center min-h-screen content-center gap-2">
       <h1 className="text-blue-500 font-extrabold text-4xl">Expense Tracker</h1>
@@ -130,6 +145,7 @@ function ExpenseListPage() {
         />
         <button onClick={handleSubmit}>Add Expense</button>
         {selectedExpenses && <button onClick={handleDelete}>Delete Selected</button>}
+        {token && <button className='bg-red-500' onClick={handleLogOut}>Log Out</button>}
     </div>
   )
 }
