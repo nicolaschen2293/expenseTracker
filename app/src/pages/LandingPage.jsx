@@ -33,7 +33,7 @@ function LandingPage() {
     }
   };
 
-  const handleLogout = async () => {
+  const handleLogOut = async () => {
     try {
         const { error } = await supabase.auth.signOut()
         if (error) throw error
@@ -42,6 +42,19 @@ function LandingPage() {
     } catch (err) {
         console.error("Log Out Error: ", err.message);
         setErrorMsg(err.message)
+    }
+  }
+
+  const handleForgotPassword = async () => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      // Development environment
+      redirectTo: 'http://localhost:3000/reset-password',
+    });
+
+    if (error) {
+      setErrorMsg(`Error: ${error.message}`);
+    } else {
+      setErrorMsg('Password reset email sent. Check your inbox.');
     }
   }
 
@@ -93,7 +106,8 @@ function LandingPage() {
           </button>
         </div>
 
-        <button className='bg-red-500' onClick={handleLogout}>Log Out</button>
+        {/* <button className='bg-red-500' onClick={handleLogOut}>Log Out</button> */}
+        <button className="bg-blue-500" onClick={handleForgotPassword}>Forgot Password</button>
       </div>
     </div>
   );
