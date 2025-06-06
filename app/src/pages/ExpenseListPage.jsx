@@ -8,6 +8,7 @@ function ExpenseListPage() {
   const [category, setCategory] = useState("");
   const [expenses, setExpenses] = useState([]);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -73,6 +74,10 @@ function ExpenseListPage() {
     console.log(data);
 
     if (!data.error) await fetchExpenses();
+    if (openModal) setOpenModal(false);
+    setTitle("");
+    setAmount("");
+    setCategory("");
   };
 
   const handleDelete = async (e) => {
@@ -126,37 +131,47 @@ function ExpenseListPage() {
           </li>
         ))}
       </ul>
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          required
-        />
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className='text-blue-700'
-          required
-        >
-          <option value="">Select Category</option>
-          <option value="Food">Food</option>
-          <option value="Transport">Transport</option>
-          <option value="Bills">Bills</option>
-          <option value="Shopping">Shopping</option>
-          <option value="Health">Health</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Luxury">Luxury</option>
-          <option value="Other">Other</option>
-        </select>
-        <button onClick={handleSubmit}>Add Expense</button>
+        {openModal && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+              <input
+                type="text"
+                placeholder="Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className='bg-gray-400'
+                required
+              />
+              <input
+                type="number"
+                placeholder="Amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className='bg-gray-400'
+                required
+              />
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className='text-blue-700'
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="Food">Food</option>
+                <option value="Transport">Transport</option>
+                <option value="Bills">Bills</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Health">Health</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Luxury">Luxury</option>
+                <option value="Other">Other</option>
+              </select>
+              <button onClick={handleSubmit} className='bg-green-500'>Add Expense</button>
+              <button onClick={() => setOpenModal(false)} className='bg-red-500'>Cancel</button>
+            </div>
+          </div>
+        )}
+        <button onClick={() => setOpenModal(true)} className='bg-green-500'>+</button>
         {selectedExpenses && <button onClick={handleDelete}>Delete Selected</button>}
         {token && <button className='bg-blue-500' onClick={goToStatistics}>Statistics</button>}
         {token && <button className='bg-red-500' onClick={handleLogOut}>Log Out</button>}

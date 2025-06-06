@@ -39,6 +39,10 @@ function StatisticsPage() {
     setExpenses(data);
   }
 
+  const back = () => {
+    navigate('/expenses');
+  }
+
   // Bar chart data (by expense title)
   const chartData = expenses.map(expense => ({
     title: expense.title,
@@ -90,6 +94,8 @@ function StatisticsPage() {
           <Legend />
         </PieChart>
       </div>
+
+      <button onClick={back} className='bg-gray-500 text-white'>Back</button>
     </div>
   );
 }
