@@ -9,6 +9,8 @@ function ExpenseListPage() {
   const [expenses, setExpenses] = useState([]);
   const [selectedExpenses, setSelectedExpenses] = useState([]);
   const [openAddExpense, setOpenAddExpense] = useState(false);
+  const [openDetailedView, setOpenDetailedView] = useState(false);
+  const [detailedExpense, setDetailedExpense] = useState(null);
   const [openFilter, setOpenFilter] = useState(false);
   const [filter, setFilter] = useState("");
   const categoryOptions = [
@@ -133,6 +135,11 @@ function ExpenseListPage() {
     setOpenFilter(false);
   }
 
+  const handleViewDetails = (expense) => {
+    setDetailedExpense(expense);
+    setOpenDetailedView(true);
+  }
+
   const goToStatistics = () => {
     navigate('/statistics');
   }
@@ -144,7 +151,7 @@ function ExpenseListPage() {
       <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
       <ul className="space-y-2">
         {expenses.map((expense) => (
-          <li key={expense.id} className="border p-2 rounded-md">
+          <li key={expense.id} onClick={() => handleViewDetails(expense)} className="border p-2 rounded-md hover:bg-gray-400">
             <input
               type="checkbox"
               checked={selectedExpenses.includes(expense.id)}
@@ -190,6 +197,17 @@ function ExpenseListPage() {
               </select>
               <button onClick={handleSubmit} className='bg-green-500'>Add Expense</button>
               <button onClick={() => setOpenAddExpense(false)} className='bg-red-500'>Cancel</button>
+            </div>
+          </div>
+        )}
+        {openDetailedView && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+            <div className="flex flex-col text-black bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+              <h1 className='self-center text-2xl'>{detailedExpense.title}</h1>
+              <h2>Expense Amount  : Rp.{detailedExpense.amount},-</h2>
+              <h2>Expense Category: {detailedExpense.category}</h2>
+              <h2>Done on         : {detailedExpense.date}</h2>
+              <button onClick={() => setOpenDetailedView(false)} className='bg-red-500'>Close</button>
             </div>
           </div>
         )}
