@@ -2,7 +2,7 @@ import { supabase } from './utils/supabase.js';
 
 export default async function handler(req, res) {
 
-  // Verify method
+  // Only allow POST method
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }

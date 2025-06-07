@@ -121,6 +121,23 @@ function ExpenseListPage() {
 
   const handleEdit = async () => {
 
+    const res = await fetch("/api/editExpense", {
+      method: "PUT",
+      headers: { 
+        "Content-Type": "application/json", 
+        Authorization: `Bearer ${token}` 
+      },
+      body: JSON.stringify({ id: detailedExpense.id, title, amount: parseFloat(amount), category }),
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    if (!data.error) await fetchExpenses(null);
+    if (openEdit) setOpenEdit(false);
+    setTitle("");
+    setAmount("");
+    setCategory("");
   }
 
   const handleLogOut = async () => {
