@@ -138,11 +138,17 @@ function ExpenseListPage() {
   // Open Edit Modal
   const handleOpenEdit = () => {
     setOpenDetailedView(false);
+    setTitle(detailedExpense.title);
+    setAmount(detailedExpense.amount);
+    setCategory(detailedExpense.category);
+    setDateTime(new Date(detailedExpense.date).toISOString().slice(0, 16));
     setOpenEdit(true);
   }
 
   // Handle Editting of Expenses
   const handleEdit = async () => {
+
+    const dateTimeObj = new Date(dateTime)
 
     const res = await fetch("/api/editExpense", {
       method: "PUT",
@@ -150,7 +156,7 @@ function ExpenseListPage() {
         "Content-Type": "application/json", 
         Authorization: `Bearer ${token}` 
       },
-      body: JSON.stringify({ id: detailedExpense.id, title, amount: parseFloat(amount), category }),
+      body: JSON.stringify({ id: detailedExpense.id, title, amount: parseFloat(amount), category, dateTimeObj }),
     });
 
     const data = await res.json();
@@ -161,6 +167,7 @@ function ExpenseListPage() {
     setTitle("");
     setAmount("");
     setCategory("");
+    setDateTime("");
   }
 
   // Handle User Log Out
@@ -302,7 +309,7 @@ function ExpenseListPage() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className='text-blue-700'
+                className='bg-gray-400'
                 required
               >
                 <option value="">Select Category</option>
@@ -310,6 +317,13 @@ function ExpenseListPage() {
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
+              <input
+                type="datetime-local"
+                id="datetime"
+                value={dateTime}
+                onChange={(e) => setDateTime(e.target.value)}
+                className="bg-gray-400"
+              />
               <button onClick={handleEdit} className='bg-green-500'>Edit Expense</button>
               <button onClick={() => setOpenEdit(false)} className='bg-red-500'>Cancel</button>
             </div>

@@ -16,6 +16,9 @@ export default async function handler(req, res) {
   if (authError || !user) return res.status(401).json({ error: "Unauthorized" });
 
   const { title, amount, category, dateTimeObj } = req.body;
+  if (!title || !amount || !category || dateTimeObj) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
 
   // 3. Create row in Supabase
   const { data, error } = await supabase
