@@ -12,6 +12,7 @@ function ExpenseListPage() {
   const [openDetailedView, setOpenDetailedView] = useState(false);
   const [detailedExpense, setDetailedExpense] = useState(null);
   const [openFilter, setOpenFilter] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [filter, setFilter] = useState("");
   const categoryOptions = [
     "Food", "Transport", "Bills", "Shopping", "Health", "Entertainment", "Luxury", "Other"
@@ -113,6 +114,15 @@ function ExpenseListPage() {
     setSelectedExpenses([]);
   }
 
+  const handleOpenEdit = () => {
+    setOpenDetailedView(false);
+    setOpenEdit(true);
+  }
+
+  const handleEdit = async () => {
+
+  }
+
   const handleLogOut = async () => {
     try {
         const { error } = await supabase.auth.signOut()
@@ -197,7 +207,7 @@ function ExpenseListPage() {
                 className='text-blue-700'
                 required
               >
-                <option value="">None</option>
+                <option value="">Select Category</option>
                 {categoryOptions.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
@@ -214,7 +224,43 @@ function ExpenseListPage() {
               <h2>Expense Amount  : Rp.{detailedExpense.amount},-</h2>
               <h2>Expense Category: {detailedExpense.category}</h2>
               <h2>Done on         : {detailedExpense.date}</h2>
+              <button onClick={() => handleOpenEdit()} className='bg-green-500'>Edit</button>
               <button onClick={() => setOpenDetailedView(false)} className='bg-red-500'>Close</button>
+            </div>
+          </div>
+        )}
+        {openEdit && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+              <input
+                type="text"
+                placeholder={detailedExpense.title}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className='bg-gray-400'
+                required
+              />
+              <input
+                type="number"
+                placeholder={detailedExpense.amount}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className='bg-gray-400'
+                required
+              />
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className='text-blue-700'
+                required
+              >
+                <option value="">Select Category</option>
+                {categoryOptions.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              <button onClick={handleEdit} className='bg-green-500'>Edit Expense</button>
+              <button onClick={() => setOpenEdit(false)} className='bg-red-500'>Cancel</button>
             </div>
           </div>
         )}
@@ -227,7 +273,7 @@ function ExpenseListPage() {
                   className='text-blue-700'
                   required
                 >
-                  <option value="">Select Category to Filter List</option>
+                  <option value="">Select Category</option>
                   <option value="None">None</option>
                   {categoryOptions.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
