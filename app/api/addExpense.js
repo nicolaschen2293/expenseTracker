@@ -15,12 +15,12 @@ export default async function handler(req, res) {
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: "Unauthorized" });
 
-  const { title, amount, category } = req.body;
+  const { title, amount, category, dateTimeObj } = req.body;
 
   // 3. Create row in Supabase
   const { data, error } = await supabase
     .from('expenses')
-    .insert([{ title, amount, category, user_id: user.id }]);
+    .insert([{ title, amount, category, date: dateTimeObj, user_id: user.id }]);
 
   if (error) return res.status(500).json({ error: error.message });
 

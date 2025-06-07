@@ -8,6 +8,7 @@ function ExpenseListPage() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [dateTime, setDateTime] = useState("");
 
   // List of Expenses to Display
   const [expenses, setExpenses] = useState([]);
@@ -95,13 +96,15 @@ function ExpenseListPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const dateTimeObj = new Date(dateTime);
+
     const res = await fetch("/api/addExpense", {
       method: "POST",
       headers: { 
         "Content-Type": "application/json", 
         Authorization: `Bearer ${token}` 
       },
-      body: JSON.stringify({ title, amount: parseFloat(amount), category }),
+      body: JSON.stringify({ title, amount: parseFloat(amount), category, dateTimeObj}),
     });
 
     const data = await res.json();
@@ -112,6 +115,7 @@ function ExpenseListPage() {
     setTitle("");
     setAmount("");
     setCategory("");
+    setDateTime("");
   };
 
   // Handle Deletion of Selected Expenses
@@ -244,7 +248,7 @@ function ExpenseListPage() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className='text-blue-700'
+                className='bg-gray-400'
                 required
               >
                 <option value="">Select Category</option>
@@ -252,6 +256,13 @@ function ExpenseListPage() {
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
+              <input
+                type="datetime-local"
+                id="datetime"
+                value={dateTime}
+                onChange={(e) => setDateTime(e.target.value)}
+                className="bg-gray-400"
+              />
               <button onClick={handleSubmit} className='bg-green-500'>Add Expense</button>
               <button onClick={() => setOpenAddExpense(false)} className='bg-red-500'>Cancel</button>
             </div>
@@ -322,7 +333,11 @@ function ExpenseListPage() {
             </div>
           </div>
         )}
-        <button onClick={() => setOpenAddExpense(true)} className='bg-green-500'>+</button>
+        <button onClick={() => {
+          setOpenAddExpense(true)
+          const now = new Date().toISOString().slice(0, 16);
+          setDateTime(now);
+          }} className='bg-green-500'>+</button>
         {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
         {token && <button className='bg-blue-500' onClick={goToStatistics}>Statistics</button>}
         {token && <button className='bg-red-500' onClick={handleLogOut}>Log Out</button>}
