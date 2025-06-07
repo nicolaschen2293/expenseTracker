@@ -10,6 +10,7 @@ function LandingPage() {
 
   const navigate = useNavigate();
 
+  // Handle Sign In / Sign Up
   const handleSubmit = async () => {
     setErrorMsg('');
     try {
@@ -33,18 +34,7 @@ function LandingPage() {
     }
   };
 
-  const handleLogOut = async () => {
-    try {
-        const { error } = await supabase.auth.signOut()
-        if (error) throw error
-
-        console.log('Log Out Success!')
-    } catch (err) {
-        console.error("Log Out Error: ", err.message);
-        setErrorMsg(err.message)
-    }
-  }
-
+  // Send Email to User to Reset their Password
   const handleForgotPassword = async () => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       // Development environment

@@ -3,25 +3,38 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabase';
 
 function ExpenseListPage() {
+
+  // Expense Attributes
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+
+  // List of Expenses to Display
   const [expenses, setExpenses] = useState([]);
+
+  // List of Expenses to Delete
   const [selectedExpenses, setSelectedExpenses] = useState([]);
+
+  // Modals
   const [openAddExpense, setOpenAddExpense] = useState(false);
   const [openDetailedView, setOpenDetailedView] = useState(false);
-  const [detailedExpense, setDetailedExpense] = useState(null);
   const [openFilter, setOpenFilter] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+
+  // Selected Expense for Detailed View
+  const [detailedExpense, setDetailedExpense] = useState(null);
+
+  // Filters and Categories
   const [filter, setFilter] = useState("");
   const categoryOptions = [
     "Food", "Transport", "Bills", "Shopping", "Health", "Entertainment", "Luxury", "Other"
   ];
 
+  // Tokens and Navigations
   const navigate = useNavigate();
-
   const [token, setToken] = useState(null);
 
+  // Check for User Session
   useEffect(() => {
     async function checkToken() {
       setToken(await getToken());
@@ -30,10 +43,7 @@ function ExpenseListPage() {
     checkToken();
   }, [])
 
-  // useEffect(() => {
-  //   console.log('Session: ', token);
-  // }, [token])
-
+  // Display Expenses on Page Load
   useEffect(() => {
     async function listExpenses() {
       await fetchExpenses(null);
@@ -42,14 +52,18 @@ function ExpenseListPage() {
     if (token) listExpenses();
   }, [token]);
 
+
+  // Get Token if there is an Active Session
   async function getToken() {
     const { data } = await supabase.auth.getSession();
     return data.session?.access_token;
   }
 
+  // Function to Fetch Expenses from Supabase
   async function fetchExpenses(listFilter) {
     let url;
 
+    // Display List with Category Filter
     if (listFilter) {
       url = `/api/getExpenses?category=${encodeURIComponent(listFilter)}`
       console.log("Filtering by ", listFilter);
@@ -68,6 +82,7 @@ function ExpenseListPage() {
     setExpenses(data);
   }
 
+  // Add Checked Expenses to List
   const handleCheckboxChange = (id) => {
     setSelectedExpenses((prevSelected) =>
       prevSelected.includes(id)
@@ -76,6 +91,7 @@ function ExpenseListPage() {
     );
   };
 
+  // Handle New Expenses
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -98,6 +114,7 @@ function ExpenseListPage() {
     setCategory("");
   };
 
+  // Handle Deletion of Selected Expenses
   const handleDelete = async (e) => {
     e.preventDefault();
 
@@ -114,11 +131,13 @@ function ExpenseListPage() {
     setSelectedExpenses([]);
   }
 
+  // Open Edit Modal
   const handleOpenEdit = () => {
     setOpenDetailedView(false);
     setOpenEdit(true);
   }
 
+  // Handle Editting of Expenses
   const handleEdit = async () => {
 
     const res = await fetch("/api/editExpense", {
@@ -140,6 +159,7 @@ function ExpenseListPage() {
     setCategory("");
   }
 
+  // Handle User Log Out
   const handleLogOut = async () => {
     try {
         const { error } = await supabase.auth.signOut()
@@ -152,6 +172,7 @@ function ExpenseListPage() {
     }
   }
 
+  // Handle Filtered List of Expenses
   const handleFilter = async (newFilter) => {
     if (newFilter === "None") {
       await fetchExpenses(null);
@@ -163,11 +184,13 @@ function ExpenseListPage() {
     setOpenFilter(false);
   }
 
+  // Open Detailed View Modal
   const handleViewDetails = (expense) => {
     setDetailedExpense(expense);
     setOpenDetailedView(true);
   }
 
+  // Navigate to Statistics Page
   const goToStatistics = () => {
     navigate('/statistics');
   }
@@ -193,7 +216,7 @@ function ExpenseListPage() {
             <div className="font-medium">{expense.title}</div>
             <div className="font-medium">Rp.{expense.amount},-</div>
             <div className="text-sm text-gray-600">
-              {expense.category} | {expense.date}
+              {expense.category} | {new Date(expense.date).toLocaleString()}
             </div>
           </li>
         </div>
@@ -240,7 +263,7 @@ function ExpenseListPage() {
               <h1 className='self-center text-2xl'>{detailedExpense.title}</h1>
               <h2>Expense Amount  : Rp.{detailedExpense.amount},-</h2>
               <h2>Expense Category: {detailedExpense.category}</h2>
-              <h2>Done on         : {detailedExpense.date}</h2>
+              <h2>Done on         : {new Date(detailedExpense.date).toLocaleString()}</h2>
               <button onClick={() => handleOpenEdit()} className='bg-green-500'>Edit</button>
               <button onClick={() => setOpenDetailedView(false)} className='bg-red-500'>Close</button>
             </div>

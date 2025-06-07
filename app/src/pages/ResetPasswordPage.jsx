@@ -14,6 +14,7 @@ function ResetPasswordPage() {
     });
   }, []);
 
+  // Reset User Password with the New One
   const handleReset = async (e) => {
     e.preventDefault();
 
