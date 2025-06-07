@@ -110,6 +110,7 @@ function ExpenseListPage() {
     console.log(data);
 
     if (!data.error) await fetchExpenses(null);
+    setSelectedExpenses([]);
   }
 
   const handleLogOut = async () => {
@@ -151,18 +152,24 @@ function ExpenseListPage() {
       <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
       <ul className="space-y-2">
         {expenses.map((expense) => (
-          <li key={expense.id} onClick={() => handleViewDetails(expense)} className="border p-2 rounded-md hover:bg-gray-400">
-            <input
-              type="checkbox"
-              checked={selectedExpenses.includes(expense.id)}
-              onChange={() => handleCheckboxChange(expense.id)}
-            />
+          <div key={expense.id} className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            checked={selectedExpenses.includes(expense.id)}
+            onChange={() => handleCheckboxChange(expense.id)}
+            className="mt-3"
+          />
+          <li
+            onClick={() => handleViewDetails(expense)}
+            className="border p-2 rounded-md flex-1 cursor-pointer hover:bg-gray-800"
+          >
             <div className="font-medium">{expense.title}</div>
-            <div className='font-medium'>Rp.{expense.amount},-</div>
+            <div className="font-medium">Rp.{expense.amount},-</div>
             <div className="text-sm text-gray-600">
               {expense.category} | {expense.date}
             </div>
           </li>
+        </div>
         ))}
       </ul>
         {openAddExpense && (
@@ -230,7 +237,7 @@ function ExpenseListPage() {
           </div>
         )}
         <button onClick={() => setOpenAddExpense(true)} className='bg-green-500'>+</button>
-        {selectedExpenses && <button onClick={handleDelete}>Delete Selected</button>}
+        {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
         {token && <button className='bg-blue-500' onClick={goToStatistics}>Statistics</button>}
         {token && <button className='bg-red-500' onClick={handleLogOut}>Log Out</button>}
     </div>
