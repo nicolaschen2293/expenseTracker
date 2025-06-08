@@ -45,14 +45,20 @@ function StatisticsPage() {
 
   const dailyExpenses = useMemo(() => {
     const grouped = {};
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7); // includes today
 
     expenses.forEach(exp => {
-      const date = new Date(exp.date).toISOString().split('T')[0]; // YYYY-MM-DD
-      if (!grouped[date]) grouped[date] = 0;
-      grouped[date] += exp.amount;
+      const dateObj = new Date(exp.date);
+      const date = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD
+
+      if (dateObj >= sevenDaysAgo && dateObj <= today) {
+        if (!grouped[date]) grouped[date] = 0;
+        grouped[date] += exp.amount;
+      }
     });
 
-    // Convert to array and sort by date
     return Object.entries(grouped)
       .map(([date, total]) => ({ date, total }))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -92,6 +98,7 @@ function StatisticsPage() {
       <h1 className='text-xl font-semibold'>Statistics</h1>
 
       {/* Line Chart for Daily Expenses */}
+      <h2 className='text-lg mb-2 mt-4 self-center'>Daily Expenses</h2>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={dailyExpenses} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -103,6 +110,7 @@ function StatisticsPage() {
       </ResponsiveContainer>
 
       {/* Bar Chart for Monthly Expenses */}
+      <h2 className='text-lg mb-2 mt-4 self-center'>Monthly Expenses</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={monthlyExpenses} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -114,25 +122,23 @@ function StatisticsPage() {
       </ResponsiveContainer>
 
       {/* Pie Chart */}
-      <div>
-        <h2 className='text-lg mb-2 mt-4 self-center'>Expenses by Category</h2>
-        <PieChart width={400} height={400}>
-          <Pie
-            data={pieData}
-            cx="50%"
-            cy="50%"
-            outerRadius={130}
-            dataKey="value"
-            label
-          >
-            {pieData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      </div>
+      <h2 className='text-lg mb-2 mt-4 self-center'>Expenses by Category</h2>
+      <PieChart width={400} height={400}>
+        <Pie
+          data={pieData}
+          cx="50%"
+          cy="50%"
+          outerRadius={130}
+          dataKey="value"
+          label
+        >
+          {pieData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend />
+      </PieChart>
 
       <button onClick={back} className='bg-gray-500 text-white'>Back</button>
     </div>
