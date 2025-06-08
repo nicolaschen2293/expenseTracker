@@ -58,11 +58,25 @@ function StatisticsPage() {
       .sort((a, b) => new Date(a.date) - new Date(b.date));
   }, [expenses]);
 
-  // Bar chart data (by expense title)
-  const chartData = expenses.map(expense => ({
-    title: expense.title,
-    amount: expense.amount,
-  }));
+  const monthlyExpenses = useMemo(() => {
+    const result = {};
+
+    expenses.forEach(expense => {
+      const date = new Date(expense.date);
+      const month = date.toLocaleString('default', { month: 'short', year: 'numeric' }); // e.g. "Jun 2025"
+
+      if (!result[month]) {
+        result[month] = 0;
+      }
+
+      result[month] += parseFloat(expense.amount);
+    });
+
+    return Object.entries(result).map(([month, total]) => ({
+      month,
+      total: parseFloat(total.toFixed(2)), // round for neatness
+    })).sort((a, b) => new Date(a.month) - new Date(b.month));
+  }, [expenses])
 
   // Pie chart data (grouped by category)
   const categoryMap = expenses.reduce((acc, expense) => {
@@ -77,7 +91,7 @@ function StatisticsPage() {
     <div className='flex flex-col items-center min-h-screen content-center gap-8 justify-center text-blue-500 p-4'>
       <h1 className='text-xl font-semibold'>Statistics</h1>
 
-      {/* Bar Chart */}
+      {/* Line Chart for Daily Expenses */}
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={dailyExpenses} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -86,6 +100,17 @@ function StatisticsPage() {
           <Tooltip />
           <Line type="monotone" dataKey="total" stroke="#8884d8" strokeWidth={2} />
         </LineChart>
+      </ResponsiveContainer>
+
+      {/* Bar Chart for Monthly Expenses */}
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={monthlyExpenses} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="total" fill="#8884d8" />
+        </BarChart>
       </ResponsiveContainer>
 
       {/* Pie Chart */}
