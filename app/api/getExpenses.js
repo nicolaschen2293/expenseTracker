@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     .select('*')
     .eq('user_id', user.id) 
     .order('date', { ascending: false }) 
-    .limit(10);
+    // .limit(10);
 
   // 4. Check for filters
   const category = req.query.category;

@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabase';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
-  PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell, Legend, LineChart, Line, ResponsiveContainer
 } from 'recharts';
 
 function StatisticsPage() {
@@ -43,6 +43,21 @@ function StatisticsPage() {
     navigate('/expenses');
   }
 
+  const dailyExpenses = useMemo(() => {
+    const grouped = {};
+
+    expenses.forEach(exp => {
+      const date = new Date(exp.date).toISOString().split('T')[0]; // YYYY-MM-DD
+      if (!grouped[date]) grouped[date] = 0;
+      grouped[date] += exp.amount;
+    });
+
+    // Convert to array and sort by date
+    return Object.entries(grouped)
+      .map(([date, total]) => ({ date, total }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+  }, [expenses]);
+
   // Bar chart data (by expense title)
   const chartData = expenses.map(expense => ({
     title: expense.title,
@@ -63,16 +78,15 @@ function StatisticsPage() {
       <h1 className='text-xl font-semibold'>Statistics</h1>
 
       {/* Bar Chart */}
-      <div>
-        <h2 className='text-lg mb-2 self-center'>Expenses by Item</h2>
-        <BarChart width={600} height={300} data={chartData}>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={dailyExpenses} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="title" />
+          <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="amount" fill="#3b82f6" />
-        </BarChart>
-      </div>
+          <Line type="monotone" dataKey="total" stroke="#8884d8" strokeWidth={2} />
+        </LineChart>
+      </ResponsiveContainer>
 
       {/* Pie Chart */}
       <div>

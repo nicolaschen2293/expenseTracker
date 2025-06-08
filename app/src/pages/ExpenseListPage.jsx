@@ -347,14 +347,16 @@ function ExpenseListPage() {
             </div>
           </div>
         )}
-        <button onClick={() => {
-          setOpenAddExpense(true)
-          const now = new Date().toISOString().slice(0, 16);
-          setDateTime(now);
-          }} className='bg-green-500'>+</button>
-        {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
-        {token && <button className='bg-blue-500' onClick={goToStatistics}>Statistics</button>}
-        {token && <button className='bg-red-500' onClick={handleLogOut}>Log Out</button>}
+        <div className="fixed flex bottom-0 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
+          <button onClick={() => {
+            setOpenAddExpense(true)
+            const now = new Date().toISOString().slice(0, 16);
+            setDateTime(now);
+            }} className='bg-green-500 w-max'>+</button>
+          {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
+          {token && <button className='bg-blue-500 w-max' onClick={goToStatistics}>Statistics</button>}
+          {token && <button className='bg-red-500 w-max' onClick={handleLogOut}>Log Out</button>}
+        </div>
     </div>
   )
 }
