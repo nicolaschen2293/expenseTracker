@@ -36,9 +36,11 @@ function LandingPage() {
 
   // Send Email to User to Reset their Password
   const handleForgotPassword = async () => {
+    const redirectURL = import.meta.env.VITE_REDIRECT_URL;
+    console.log("redirecting to: ", redirectURL);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       // Development environment
-      redirectTo: 'http://localhost:3000/reset-password',
+      redirectTo: redirectURL,
     });
 
     if (error) {

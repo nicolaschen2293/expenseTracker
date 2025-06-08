@@ -31,6 +31,10 @@ function ExpenseListPage() {
     "Food", "Transport", "Bills", "Shopping", "Health", "Entertainment", "Luxury", "Other"
   ];
 
+  // User Feedbacks
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+
   // Tokens and Navigations
   const navigate = useNavigate();
   const [token, setToken] = useState(null);
@@ -47,11 +51,23 @@ function ExpenseListPage() {
   // Display Expenses on Page Load
   useEffect(() => {
     async function listExpenses() {
-      await fetchExpenses(null);
+      try {
+        await fetchExpenses(null);
+      } catch (err) {
+        setMessage({ type: 'error', text: err.message });
+      }
     }
     
     if (token) listExpenses();
   }, [token]);
+
+  // Dismiss message after 3 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
 
   // Get Token if there is an Active Session
@@ -73,14 +89,24 @@ function ExpenseListPage() {
       url = "/api/getExpenses";
     }
 
-    const res = await fetch(url, {
-      method:"GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await res.json();
-    setExpenses(data);
+    try {
+      const res = await fetch(url, {
+        method:"GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+
+      if (data.error) throw new Error(data.error || 'Failed to fetch expenses.');
+
+      setExpenses(data);
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+      throw err;
+    } finally {
+
+    }
   }
 
   // Add Checked Expenses to List
@@ -95,44 +121,75 @@ function ExpenseListPage() {
   // Handle New Expenses
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setMessage(null);
 
-    const dateTimeObj = new Date(dateTime);
+    try {
+      const dateTimeObj = new Date(dateTime);
 
-    const res = await fetch("/api/addExpense", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json", 
-        Authorization: `Bearer ${token}` 
-      },
-      body: JSON.stringify({ title, amount: parseFloat(amount), category, dateTimeObj}),
-    });
+      const res = await fetch("/api/addExpense", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ title, amount: parseFloat(amount), category, dateTimeObj}),
+      });
 
-    const data = await res.json();
-    console.log(data);
+      const data = await res.json();
+      console.log(data);
 
-    if (!data.error) await fetchExpenses(null);
-    if (openAddExpense) setOpenAddExpense(false);
-    setTitle("");
-    setAmount("");
-    setCategory("");
-    setDateTime("");
+      if (data.error) throw new Error(data.error || 'Failed to create expense.');
+        
+      try {
+        await fetchExpenses(null);
+      } catch (err) {
+        throw new Error('Expense created, failed to fetch expenses.');
+      }
+      setMessage({ type: 'success', text: 'Expense added successfully!' });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      if (openAddExpense) setOpenAddExpense(false);
+      setTitle("");
+      setAmount("");
+      setCategory("");
+      setDateTime("");
+      setIsLoading(false);
+    }
   };
 
   // Handle Deletion of Selected Expenses
   const handleDelete = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setMessage(null);
 
-    const res = await fetch("/api/deleteExpense", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify(selectedExpenses),
-    });
+    try {
+      const res = await fetch("/api/deleteExpense", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(selectedExpenses),
+      });
 
-    const data = await res.json();
-    console.log(data);
+      const data = await res.json();
+      console.log(data);
 
-    if (!data.error) await fetchExpenses(null);
-    setSelectedExpenses([]);
+      if (data.error) throw new Error(data.error || 'Failed to delete expense.');
+
+      try {
+        await fetchExpenses(null);
+      } catch (err) {
+        throw new Error('Expense(s) deleted, failed to fetch expenses.')
+      }
+      setMessage({ type: 'success', text: 'Expense(s) deleted successfully!' });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      setSelectedExpenses([]);
+      setIsLoading(false);
+    }
+    
   }
 
   // Open Edit Modal
@@ -145,29 +202,45 @@ function ExpenseListPage() {
     setOpenEdit(true);
   }
 
-  // Handle Editting of Expenses
+  // Handle Editing of Expenses
   const handleEdit = async () => {
+    setIsLoading(true);
+    setMessage(null);
 
     const dateTimeObj = new Date(dateTime)
 
-    const res = await fetch("/api/editExpense", {
-      method: "PUT",
-      headers: { 
-        "Content-Type": "application/json", 
-        Authorization: `Bearer ${token}` 
-      },
-      body: JSON.stringify({ id: detailedExpense.id, title, amount: parseFloat(amount), category, dateTimeObj }),
-    });
+    try {
+      const res = await fetch("/api/editExpense", {
+        method: "PUT",
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ id: detailedExpense.id, title, amount: parseFloat(amount), category, dateTimeObj }),
+      });
 
-    const data = await res.json();
-    console.log(data);
+      const data = await res.json();
+      console.log(data);
 
-    if (!data.error) await fetchExpenses(null);
-    if (openEdit) setOpenEdit(false);
-    setTitle("");
-    setAmount("");
-    setCategory("");
-    setDateTime("");
+      if (data.error) throw new Error(data.error || 'Failed to edit expense.');
+
+      try {
+        await fetchExpenses(null);
+      } catch (err) {
+        throw new Error('Expense edited, failed to fetch expenses.')
+      }
+      setMessage({ type: 'success', text: 'Expense edited successfully!' });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      if (openEdit) setOpenEdit(false);
+      setTitle("");
+      setAmount("");
+      setCategory("");
+      setDateTime("");
+
+      setIsLoading(false);
+    }
   }
 
   // Handle User Log Out
@@ -185,14 +258,28 @@ function ExpenseListPage() {
 
   // Handle Filtered List of Expenses
   const handleFilter = async (newFilter) => {
+    setIsLoading(true);
+    setMessage(null);
+
     if (newFilter === "None") {
-      await fetchExpenses(null);
+      try {
+        await fetchExpenses(null);
+      } catch (err) {
+        setMessage({ type: 'error', text: err.message });
+      }
     } else {
-      setFilter(newFilter);
-      await fetchExpenses(newFilter);
+      try {
+        setFilter(newFilter);
+        await fetchExpenses(newFilter);
+      } catch (err) {
+        setMessage({ type: 'error', text: err.message });
+      }
     }
+
     setFilter("");
     setOpenFilter(false);
+    setIsLoading(false);
+    setMessage({ type: 'success', text: 'Filter applied!' });
   }
 
   // Open Detailed View Modal
@@ -210,7 +297,7 @@ function ExpenseListPage() {
     <div className="flex flex-col items-center min-h-screen content-center gap-2">
       <h1 className="text-blue-500 font-extrabold text-4xl">Expense Tracker</h1>
       <h2 className="text-xl font-bold mb-2">Recent Expenses</h2>
-      <div className="overflow-x-auto pb-24">
+      <div className="overflow-x-auto pb-20">
         <table className="text-sm text-left">
           <thead className="bg-gray-200 text-gray-700 uppercase w-max">
             <tr>
@@ -355,6 +442,18 @@ function ExpenseListPage() {
             </div>
           </div>
         )}
+        <div className="fixed flex flex-col bottom-10 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
+          {isLoading && <div className="text-blue-600 self-center">Loading...</div>}
+          {message && (
+            <div
+              className={`p-2 rounded text-white mt-2 ${
+                message.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+              }`}
+            >
+              {message.text}
+            </div>
+          )}
+        </div>
         <div className="fixed flex bottom-0 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           <button onClick={() => {
             setOpenAddExpense(true)

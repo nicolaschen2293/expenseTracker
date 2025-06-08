@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
   const { title, amount, category, dateTimeObj } = req.body;
   if (!title || !amount || !category || !dateTimeObj) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    return res.status(400).json({ error: 'Missing Required Fields' });
   }
 
   // 3. Create row in Supabase
