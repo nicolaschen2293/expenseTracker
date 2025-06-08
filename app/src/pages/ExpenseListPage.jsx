@@ -210,11 +210,11 @@ function ExpenseListPage() {
     <div className="flex flex-col items-center min-h-screen content-center gap-2">
       <h1 className="text-blue-500 font-extrabold text-4xl">Expense Tracker</h1>
       <h2 className="text-xl font-bold mb-2">Recent Expenses</h2>
-      <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
       <div className="overflow-x-auto pb-24">
-        <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-200 text-gray-700 uppercase">
+        <table className="text-sm text-left">
+          <thead className="bg-gray-200 text-gray-700 uppercase w-max">
             <tr>
+              <th></th>
               <th className="px-4 py-2">Title</th>
               <th className="px-4 py-2 text-right">Amount</th>
             </tr>
@@ -226,6 +226,14 @@ function ExpenseListPage() {
                 className="border-b hover:bg-gray-600 cursor-pointer"
                 onClick={() => handleViewDetails(expense)}
               >
+                <td className="text-center" onClick={(e) => e.stopPropagation()}>
+                  <input
+                    type="checkbox"
+                    checked={selectedExpenses.includes(expense.id)}
+                    onChange={() => handleCheckboxChange(expense.id)}
+                    className="mt-3"
+                  />
+                </td>
                 <td className="px-4 py-2">{expense.title}</td>
                 <td className="px-4 py-2 text-right">Rp.{expense.amount},-</td>
               </tr>
@@ -353,6 +361,7 @@ function ExpenseListPage() {
             const now = new Date().toISOString().slice(0, 16);
             setDateTime(now);
             }} className='bg-green-500 w-max'>+</button>
+          <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
           {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
           {token && <button className='bg-blue-500 w-max' onClick={goToStatistics}>Statistics</button>}
           {token && <button className='bg-red-500 w-max' onClick={handleLogOut}>Log Out</button>}
