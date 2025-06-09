@@ -1,12 +1,19 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
 import 'dotenv/config';
 
-// Supabase credentials (Store these in .env file for security)
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
-console.log("SUPABASE URL = ", SUPABASE_URL);
-console.log("SUPABASE KEY = ", SUPABASE_KEY);
-
-// Initialize Supabase client
+// Use this for public/server-side service (no user)
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Use this to create a client with a user token for RLS
+export const createSupabaseClientWithToken = (token) => {
+  return createClient(SUPABASE_URL, SUPABASE_KEY, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+};

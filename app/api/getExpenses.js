@@ -1,4 +1,4 @@
-import { supabase } from './utils/supabase.js';
+import { createSupabaseClientWithToken } from './utils/supabase.js';
 
 export default async function handler(req, res) {
 
@@ -11,11 +11,14 @@ export default async function handler(req, res) {
   const token = req.headers.authorization?.replace("Bearer ", "");
   if (!token) return res.status(401).json({ error: "No token provided" });
 
-  // 2. Authenticate user
+  // 2. Create scoped supabase client
+  const supabase = createSupabaseClientWithToken(token);
+
+  // 3. Authenticate user
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: "Unauthorized" });
 
-  // 3. Create query
+  // 4. Create query
   let query = supabase
     .from('expenses')
     .select('*')
@@ -23,13 +26,13 @@ export default async function handler(req, res) {
     .order('date', { ascending: false }) 
     // .limit(10);
 
-  // 4. Check for filters
+  // 5. Check for filters
   const category = req.query.category;
   if (category) {
     query = query.eq('category', category);
   }
 
-  // 5. Get expenses from Supabase
+  // 6. Get expenses from Supabase
   const { data, error } = await query
 
   if (error) {

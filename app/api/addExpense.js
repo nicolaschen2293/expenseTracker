@@ -1,4 +1,4 @@
-import { supabase } from './utils/supabase.js';
+import { createSupabaseClientWithToken } from './utils/supabase.js';
 
 export default async function handler(req, res) {
 
@@ -11,7 +11,10 @@ export default async function handler(req, res) {
   const token = req.headers.authorization?.replace("Bearer ", "");
   if (!token) return res.status(401).json({ error: "No token provided" });
 
-  // 2. Authenticate user
+  // 2. Create scoped supabase client
+  const supabase = createSupabaseClientWithToken(token);
+
+  // 3. Authenticate user
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) return res.status(401).json({ error: "Unauthorized" });
 
@@ -20,7 +23,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing Required Fields' });
   }
 
-  // 3. Create row in Supabase
+  // 4. Create row in Supabase
   const { data, error } = await supabase
     .from('expenses')
     .insert([{ title, amount, category, date: dateTimeObj, user_id: user.id }]);
