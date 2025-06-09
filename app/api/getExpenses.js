@@ -23,10 +23,10 @@ export default async function handler(req, res) {
     .from('expenses')
     .select('*', { count: 'exact' })
     .eq('user_id', user.id) 
-    .order('date', { ascending: false }) 
+    // .order('date', { ascending: false }) 
 
-  // 5. Check for filters and pages
-  const { category, minAmount, maxAmount, startDate, endDate, page = 1 } = req.query;
+  // 5. Apply filters
+  const { category, minAmount, maxAmount, startDate, endDate, page = 1, sorting } = req.query;
   const offset = (parseInt(page, 10) - 1) * 10;
 
   if (category) query = query.eq("category", category);
@@ -35,9 +35,24 @@ export default async function handler(req, res) {
   if (startDate) query = query.gte("date", startDate);
   if (endDate) query = query.lte("date", endDate);
 
+  // 6. Set page
   query = query.range(offset, offset + 9);
 
-  // 6. Get expenses from Supabase
+  // 7. Set sorting
+  console.log("sorting: ", sorting);
+  if (sorting === "datedescending") {
+    query = query.order('date', { ascending: false })
+  } else if (sorting === "dateascending") {
+    query = query.order('date')
+  } else if (sorting === "amountdescending") {
+    query = query.order('amount', { ascending: false })
+  } else if (sorting === "amountascending") {
+    query = query.order('amount')
+  } else {
+    return res.status(500).json({ error: 'Invalid sorting' });
+  }
+
+  // 8. Get expenses from Supabase
   const { count, data, error } = await query
 
   if (error) {

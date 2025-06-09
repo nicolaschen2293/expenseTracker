@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabase';
+import { Button } from 'react-bootstrap';
 
 function ExpenseListPage() {
 
@@ -25,15 +26,21 @@ function ExpenseListPage() {
   // Selected Expense for Detailed View
   const [detailedExpense, setDetailedExpense] = useState(null);
 
-  // Filters and Categories
+  // Categories
+  const categoryOptions = [
+    "Food", "Transport", "Bills", "Shopping", "Health", "Entertainment", "Luxury", "Other"
+  ];
+
+  // Filters
   const [categoryFilter, setCategoryFilter] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
   const [startDate, setStartdate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const categoryOptions = [
-    "Food", "Transport", "Bills", "Shopping", "Health", "Entertainment", "Luxury", "Other"
-  ];
+
+  // Sorting
+  const [sorting, setSorting] = useState("");
+  const [openSorting, setOpenSorting] = useState(false);
 
   // User Feedbacks
   const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +75,7 @@ function ExpenseListPage() {
     
     console.log("Page changed to: ", currentPage);
     if (token) listExpenses();
-  }, [token, currentPage]);
+  }, [token, currentPage, sorting]);
 
   // Dismiss message after 3 seconds
   useEffect(() => {
@@ -95,6 +102,9 @@ function ExpenseListPage() {
   // Function to Fetch Expenses from Supabase
   async function fetchExpenses() {
     setIsLoading(true)
+    if (openSorting) setOpenSorting(false);
+    console.log('sorting: ', sorting);
+
     let url = `/api/getExpenses?page=${currentPage}&`;
 
     // Check for filters and modify URL
@@ -104,7 +114,18 @@ function ExpenseListPage() {
     if (startDate) url += `startDate=${encodeURIComponent(startDate)}&`;
     if (endDate) url += `endDate=${encodeURIComponent(endDate)}&`;
 
-    console.log("uri: ", url);
+    // Set sorting mode
+    if (!sorting || sorting === "" || sorting === "date descending") {
+      url += `sorting=datedescending&`
+    } else if (sorting === "date ascending") {
+      url += `sorting=dateascending&`
+    } else if (sorting === "amount descending") {
+      url += `sorting=amountdescending&`
+    } else if (sorting === "amount ascending") {
+      url += `sorting=amountascending&`
+    } else {
+      throw new Error("Invalid sorting");
+    }
 
     try {
       const res = await fetch(url, {
@@ -282,7 +303,6 @@ function ExpenseListPage() {
 
     try {
       await fetchExpenses();
-
       setMessage({ type: 'success', text: 'Filter applied!' });
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
@@ -496,6 +516,25 @@ function ExpenseListPage() {
             </div>
           </div>
         )}
+        {openSorting && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+              <select
+                  value={sorting}
+                  onChange={(e) => setSorting(e.target.value)}
+                  className='bg-gray-400'
+                  required
+                >
+                  <option value="">Select Sorting</option>
+                  <option value="date descending">Date Descending</option>
+                  <option value="date ascending">Date Ascending</option>
+                  <option value="amount ascending">Amount Ascending</option>
+                  <option value="amount descending">Amount Descending</option>
+                </select>
+                <button onClick={() => setOpenSorting(false)} className='bg-red-500'>Close</button>
+            </div>
+          </div>
+        )}
         <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(1)} disabled={currentPage == 1}>&laquo;</button>
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage <= 1}>Prev</button>
@@ -524,6 +563,7 @@ function ExpenseListPage() {
             setDateTime(now);
             }} className='bg-green-500 w-max'>+</button>
           <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
+          <button onClick={() => setOpenSorting(true)} className='bg-purple-500'>Sorting</button>
           {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
           {token && <button className='bg-blue-500 w-max' onClick={goToStatistics}>Statistics</button>}
           {token && <button className='bg-red-500 w-max' onClick={handleLogOut}>Log Out</button>}
