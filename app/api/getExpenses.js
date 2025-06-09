@@ -26,11 +26,15 @@ export default async function handler(req, res) {
     .order('date', { ascending: false }) 
     // .limit(10);
 
-  // 5. Check for filters
+  // 5. Check for filters and pages
   const category = req.query.category;
   if (category) {
     query = query.eq('category', category);
   }
+
+  const page = parseInt(req.query.page, 10) || 1;
+  const offset = (page - 1) * 10;
+  query = query.range(offset, offset + 10 - 1);
 
   // 6. Get expenses from Supabase
   const { data, error } = await query

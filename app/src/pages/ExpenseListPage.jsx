@@ -39,6 +39,9 @@ function ExpenseListPage() {
   const navigate = useNavigate();
   const [token, setToken] = useState(null);
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+
   // Check for User Session
   useEffect(() => {
     async function checkToken() {
@@ -58,8 +61,9 @@ function ExpenseListPage() {
       }
     }
     
+    console.log("Page changed to: ", currentPage);
     if (token) listExpenses();
-  }, [token]);
+  }, [token, currentPage]);
 
   // Dismiss message after 3 seconds
   useEffect(() => {
@@ -82,11 +86,11 @@ function ExpenseListPage() {
 
     // Display List with Category Filter
     if (listFilter) {
-      url = `/api/getExpenses?category=${encodeURIComponent(listFilter)}`
+      url = `/api/getExpenses?category=${encodeURIComponent(listFilter)}&page=${currentPage}`
       console.log("Filtering by ", listFilter);
       console.log("url = ", url);
     } else {
-      url = "/api/getExpenses";
+      url = `/api/getExpenses?page=${currentPage}`;
     }
 
     try {
@@ -442,6 +446,13 @@ function ExpenseListPage() {
             </div>
           </div>
         )}
+        <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
+          <button onClick={() => setCurrentPage(currentPage - 1)}>Prev</button>
+          <button onClick={() => setCurrentPage(currentPage - 2)}>{currentPage > 2 ? currentPage - 2 : ""}</button>
+          <button onClick={() => setCurrentPage(currentPage + 2)}>{currentPage + 2}</button>
+          <button onClick={() => setCurrentPage(currentPage + 3)}>{currentPage + 3}</button>
+          <button onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+        </div>
         <div className="fixed flex flex-col bottom-10 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           {isLoading && <div className="text-blue-600 self-center">Loading...</div>}
           {message && (
