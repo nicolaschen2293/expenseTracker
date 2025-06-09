@@ -20,11 +20,6 @@ export default async function handler(req, res) {
 
   // 4. Get body data
   const { id, title, amount, category, dateTimeObj } = req.body;
-  console.log("id: ", id);
-  console.log("title: ", title);
-  console.log("amount: ", amount);
-  console.log("category: ", category);
-  console.log("dateTimeObj: ", dateTimeObj);
   if (!id || !title || !amount || !category || !dateTimeObj) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
