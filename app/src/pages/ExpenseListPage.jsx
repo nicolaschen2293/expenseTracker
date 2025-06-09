@@ -31,6 +31,7 @@ function ExpenseListPage() {
   ];
 
   // Filters
+  const [filtered, setFiltered] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
@@ -72,9 +73,8 @@ function ExpenseListPage() {
       }
     }
     
-    console.log("Page changed to: ", currentPage);
     if (token) listExpenses();
-  }, [token, sorting]);
+  }, [token]);
 
   // Dismiss message after 3 seconds
   useEffect(() => {
@@ -102,7 +102,6 @@ function ExpenseListPage() {
   async function fetchExpenses(page = currentPage) {
     setIsLoading(true)
     if (openSorting) setOpenSorting(false);
-    console.log('sorting: ', sorting);
 
     let url = `/api/getExpenses?page=${page}&`;
 
@@ -299,6 +298,7 @@ function ExpenseListPage() {
   const handleFilter = async () => {
     setIsLoading(true);
     setMessage(null);
+    setFiltered(true);
 
     try {
       await fetchExpenses(1);
@@ -306,14 +306,27 @@ function ExpenseListPage() {
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
     } finally {
-      setCategoryFilter("");
-      setMinAmount("");
-      setMaxAmount("");
-      setStartdate("");
-      setEndDate("");
       setCurrentPage(1);
       setOpenFilter(false);
       setIsLoading(false);
+    }
+  }
+
+  const clearFilter = async () => {
+    setCategoryFilter("");
+    setMinAmount("");
+    setMaxAmount("");
+    setStartdate("");
+    setEndDate("");
+    setSorting("");
+    setCurrentPage(1);
+    setFiltered(false);
+
+    try {
+      await fetchExpenses(1);
+      setMessage({ type: 'success', text: 'Filter cleared!' });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
     }
   }
 
@@ -522,12 +535,24 @@ function ExpenseListPage() {
                   onChange={(e) => setEndDate(e.target.value)}
                   className="bg-gray-400"
                 />
+                <select
+                  value={sorting}
+                  onChange={(e) => setSorting(e.target.value)}
+                  className='bg-gray-400'
+                  required
+                >
+                  <option value="">Sort by</option>
+                  <option value="date descending">Date Descending</option>
+                  <option value="date ascending">Date Ascending</option>
+                  <option value="amount ascending">Amount Ascending</option>
+                  <option value="amount descending">Amount Descending</option>
+                </select>
                 <button onClick={handleFilter} className='bg-blue-500'>Apply</button>
                 <button onClick={() => setOpenFilter(false)} className='bg-red-500'>Close</button>
             </div>
           </div>
         )}
-        {openSorting && (
+        {/* {openSorting && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
             <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
               <select
@@ -545,7 +570,7 @@ function ExpenseListPage() {
                 <button onClick={() => setOpenSorting(false)} className='bg-red-500'>Close</button>
             </div>
           </div>
-        )}
+        )} */}
         <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-currentPage+1)} disabled={currentPage == 1}>&laquo;</button>
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-1)} disabled={currentPage <= 1}>Prev</button>
@@ -574,7 +599,7 @@ function ExpenseListPage() {
             setDateTime(now);
             }} className='bg-green-500 w-max'>+</button>
           <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
-          <button onClick={() => setOpenSorting(true)} className='bg-purple-500'>Sorting</button>
+          {filtered && <button onClick={clearFilter} className='bg-purple-500'>Clear Filter</button>}
           {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
           {token && <button className='bg-blue-500 w-max' onClick={goToStatistics}>Statistics</button>}
           {token && <button className='bg-red-500 w-max' onClick={handleLogOut}>Log Out</button>}
