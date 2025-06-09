@@ -78,7 +78,14 @@ function ExpenseListPage() {
   // Get Token if there is an Active Session
   async function getToken() {
     const { data } = await supabase.auth.getSession();
-    return data.session?.access_token;
+    const token = data?.session?.access_token;
+
+    if (!token) {
+      navigate('/');
+      return null;
+    }
+
+    return token;
   }
 
   // Function to Fetch Expenses from Supabase
