@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabase';
-import { Button } from 'react-bootstrap';
 
 function ExpenseListPage() {
 
@@ -75,7 +74,7 @@ function ExpenseListPage() {
     
     console.log("Page changed to: ", currentPage);
     if (token) listExpenses();
-  }, [token, currentPage, sorting]);
+  }, [token, sorting]);
 
   // Dismiss message after 3 seconds
   useEffect(() => {
@@ -100,12 +99,12 @@ function ExpenseListPage() {
   }
 
   // Function to Fetch Expenses from Supabase
-  async function fetchExpenses() {
+  async function fetchExpenses(page = currentPage) {
     setIsLoading(true)
     if (openSorting) setOpenSorting(false);
     console.log('sorting: ', sorting);
 
-    let url = `/api/getExpenses?page=${currentPage}&`;
+    let url = `/api/getExpenses?page=${page}&`;
 
     // Check for filters and modify URL
     if (categoryFilter) url += `category=${encodeURIComponent(categoryFilter)}&`;
@@ -302,7 +301,7 @@ function ExpenseListPage() {
     setMessage(null);
 
     try {
-      await fetchExpenses();
+      await fetchExpenses(1);
       setMessage({ type: 'success', text: 'Filter applied!' });
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
@@ -312,8 +311,20 @@ function ExpenseListPage() {
       setMaxAmount("");
       setStartdate("");
       setEndDate("");
+      setCurrentPage(1);
       setOpenFilter(false);
       setIsLoading(false);
+    }
+  }
+
+  const handlePageChange = async(change) => {
+    const nextPage = currentPage + change;
+    setCurrentPage(nextPage);
+
+    try {
+      await fetchExpenses(nextPage);
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
     }
   }
 
@@ -536,13 +547,13 @@ function ExpenseListPage() {
           </div>
         )}
         <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(1)} disabled={currentPage == 1}>&laquo;</button>
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage <= 1}>Prev</button>
-          {currentPage > 2 && <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 2)} disabled={currentPage <= 2}>{currentPage > 2 ? currentPage - 2 : ""}</button>}
-          {currentPage + 2 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 2)} disabled={currentPage + 2 > totalPages}>{currentPage + 2}</button>}
-          {currentPage + 3 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 3)} disabled={currentPage + 3 > totalPages}>{currentPage + 3}</button>}
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage + 1 > totalPages}>Next</button>
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(totalPages)} disabled={currentPage == totalPages}>&raquo;</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-currentPage+1)} disabled={currentPage == 1}>&laquo;</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-1)} disabled={currentPage <= 1}>Prev</button>
+          {currentPage > 2 && <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-2)} disabled={currentPage <= 2}>{currentPage > 2 ? currentPage - 2 : ""}</button>}
+          {currentPage + 2 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(2)} disabled={currentPage + 2 > totalPages}>{currentPage + 2}</button>}
+          {currentPage + 3 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(3)} disabled={currentPage + 3 > totalPages}>{currentPage + 3}</button>}
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(1)} disabled={currentPage + 1 > totalPages}>Next</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(totalPages - currentPage)} disabled={currentPage == totalPages}>&raquo;</button>
         </div>
         <div className="fixed flex flex-col bottom-10 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           {isLoading && <div className="text-blue-600 self-center">Loading...</div>}
