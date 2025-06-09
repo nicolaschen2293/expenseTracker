@@ -23,7 +23,6 @@ export default async function handler(req, res) {
     .from('expenses')
     .select('*', { count: 'exact' })
     .eq('user_id', user.id) 
-    // .order('date', { ascending: false }) 
 
   // 5. Apply filters
   const { category, minAmount, maxAmount, startDate, endDate, page = 1, sorting, all } = req.query;
@@ -39,7 +38,6 @@ export default async function handler(req, res) {
   if (!all) query = query.range(offset, offset + 9);
 
   // 7. Set sorting
-  console.log("sorting: ", sorting);
   if (sorting === "datedescending") {
     query = query.order('date', { ascending: false })
   } else if (sorting === "dateascending") {

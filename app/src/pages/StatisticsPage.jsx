@@ -21,8 +21,6 @@ function StatisticsPage() {
 
   useEffect(() => {
     if (token) fetchExpenses();
-
-    console.log(expenses)
   }, [token]);
 
   async function getToken() {
