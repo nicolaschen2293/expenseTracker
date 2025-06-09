@@ -35,12 +35,6 @@ export default async function handler(req, res) {
   if (startDate) query = query.gte("date", startDate);
   if (endDate) query = query.lte("date", endDate);
 
-  // if (category) console.log("Category: ", category)
-  // if (minAmount) console.log("minAmount: ", minAmount)
-  // if (maxAmount) console.log("maxAmount: ", maxAmount)
-  // if (startDate) console.log("startDate: ", startDate)
-  // if (endDate) console.log("endDate: ", endDate)
-
   query = query.range(offset, offset + 9);
 
   // 6. Get expenses from Supabase
