@@ -99,27 +99,27 @@ function ExpenseListPage() {
   }
 
   // Function to Fetch Expenses from Supabase
-  async function fetchExpenses(page = currentPage) {
+  async function fetchExpenses(category = categoryFilter, min = minAmount, max = maxAmount, start = startDate, end = endDate, sort = sorting, page = currentPage) {
     setIsLoading(true)
     if (openSorting) setOpenSorting(false);
 
     let url = `/api/getExpenses?page=${page}&`;
 
     // Check for filters and modify URL
-    if (categoryFilter) url += `category=${encodeURIComponent(categoryFilter)}&`;
-    if (minAmount) url += `minAmount=${minAmount}&`;
-    if (maxAmount) url += `maxAmount=${maxAmount}&`;
-    if (startDate) url += `startDate=${encodeURIComponent(startDate)}&`;
-    if (endDate) url += `endDate=${encodeURIComponent(endDate)}&`;
+    if (category) url += `category=${encodeURIComponent(categoryFilter)}&`;
+    if (min) url += `minAmount=${minAmount}&`;
+    if (max) url += `maxAmount=${maxAmount}&`;
+    if (start) url += `startDate=${encodeURIComponent(startDate)}&`;
+    if (end) url += `endDate=${encodeURIComponent(endDate)}&`;
 
     // Set sorting mode
-    if (!sorting || sorting === "" || sorting === "date descending") {
+    if (!sort || sort === "" || sort === "date descending") {
       url += `sorting=datedescending&`
-    } else if (sorting === "date ascending") {
+    } else if (sort === "date ascending") {
       url += `sorting=dateascending&`
-    } else if (sorting === "amount descending") {
+    } else if (sort === "amount descending") {
       url += `sorting=amountdescending&`
-    } else if (sorting === "amount ascending") {
+    } else if (sort === "amount ascending") {
       url += `sorting=amountascending&`
     } else {
       throw new Error("Invalid sorting");
@@ -299,6 +299,7 @@ function ExpenseListPage() {
     setIsLoading(true);
     setMessage(null);
     setFiltered(true);
+    setCurrentPage(1);
 
     try {
       await fetchExpenses(1);
@@ -306,7 +307,6 @@ function ExpenseListPage() {
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
     } finally {
-      setCurrentPage(1);
       setOpenFilter(false);
       setIsLoading(false);
     }
@@ -323,7 +323,7 @@ function ExpenseListPage() {
     setFiltered(false);
 
     try {
-      await fetchExpenses(1);
+      await fetchExpenses("","","","","","",1);
       setMessage({ type: 'success', text: 'Filter cleared!' });
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
