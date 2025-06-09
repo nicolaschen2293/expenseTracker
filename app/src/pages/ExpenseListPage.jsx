@@ -477,20 +477,20 @@ function ExpenseListPage() {
                   className='bg-gray-400'
                   required
                 />
-                {/* <input
-                  type="date-local"
+                <input
+                  type="date"
                   id="date"
                   value={startDate}
                   onChange={(e) => setStartdate(e.target.value)}
                   className="bg-gray-400"
                 />
                 <input
-                  type="date-local"
+                  type="date"
                   id="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   className="bg-gray-400"
-                /> */}
+                />
                 <button onClick={handleFilter} className='bg-blue-500'>Apply</button>
                 <button onClick={() => setOpenFilter(false)} className='bg-red-500'>Close</button>
             </div>
