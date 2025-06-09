@@ -41,6 +41,7 @@ function ExpenseListPage() {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Check for User Session
   useEffect(() => {
@@ -104,7 +105,10 @@ function ExpenseListPage() {
 
       if (data.error) throw new Error(data.error || 'Failed to fetch expenses.');
 
-      setExpenses(data);
+      setExpenses(data.data);
+      console.log("total = ", data.total);
+      setTotalPages(Math.ceil(data.total / 10));
+      console.log("total pages = ", totalPages);
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
       throw err;
@@ -447,11 +451,11 @@ function ExpenseListPage() {
           </div>
         )}
         <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
-          <button onClick={() => setCurrentPage(currentPage - 1)}>Prev</button>
-          <button onClick={() => setCurrentPage(currentPage - 2)}>{currentPage > 2 ? currentPage - 2 : ""}</button>
-          <button onClick={() => setCurrentPage(currentPage + 2)}>{currentPage + 2}</button>
-          <button onClick={() => setCurrentPage(currentPage + 3)}>{currentPage + 3}</button>
-          <button onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage <= 1}>Prev</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 2)} disabled={currentPage <= 2}>{currentPage > 2 ? currentPage - 2 : ""}</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 2)} disabled={currentPage + 2 > totalPages}>{currentPage + 2}</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 3)} disabled={currentPage + 3 > totalPages}>{currentPage + 3}</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage + 1 > totalPages}>Next</button>
         </div>
         <div className="fixed flex flex-col bottom-10 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           {isLoading && <div className="text-blue-600 self-center">Loading...</div>}
