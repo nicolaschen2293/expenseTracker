@@ -24,17 +24,24 @@ export default async function handler(req, res) {
     .select('*', { count: 'exact' })
     .eq('user_id', user.id) 
     .order('date', { ascending: false }) 
-    // .limit(10);
 
   // 5. Check for filters and pages
-  const category = req.query.category;
-  if (category) {
-    query = query.eq('category', category);
-  }
+  const { category, minAmount, maxAmount, startDate, endDate, page = 1 } = req.query;
+  const offset = (parseInt(page, 10) - 1) * 10;
 
-  const page = parseInt(req.query.page, 10) || 1;
-  const offset = (page - 1) * 10;
-  query = query.range(offset, offset + 10 - 1);
+  if (category) query = query.eq("category", category);
+  if (minAmount) query = query.gte("amount", parseFloat(minAmount));
+  if (maxAmount) query = query.lte("amount", parseFloat(maxAmount));
+  if (startDate) query = query.gte("date", startDate);
+  if (endDate) query = query.lte("date", endDate);
+
+  // if (category) console.log("Category: ", category)
+  // if (minAmount) console.log("minAmount: ", minAmount)
+  // if (maxAmount) console.log("maxAmount: ", maxAmount)
+  // if (startDate) console.log("startDate: ", startDate)
+  // if (endDate) console.log("endDate: ", endDate)
+
+  query = query.range(offset, offset + 9);
 
   // 6. Get expenses from Supabase
   const { count, data, error } = await query

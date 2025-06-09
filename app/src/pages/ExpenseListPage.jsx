@@ -26,7 +26,11 @@ function ExpenseListPage() {
   const [detailedExpense, setDetailedExpense] = useState(null);
 
   // Filters and Categories
-  const [filter, setFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
+  const [startDate, setStartdate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const categoryOptions = [
     "Food", "Transport", "Bills", "Shopping", "Health", "Entertainment", "Luxury", "Other"
   ];
@@ -56,7 +60,7 @@ function ExpenseListPage() {
   useEffect(() => {
     async function listExpenses() {
       try {
-        await fetchExpenses(null);
+        await fetchExpenses();
       } catch (err) {
         setMessage({ type: 'error', text: err.message });
       }
@@ -89,18 +93,24 @@ function ExpenseListPage() {
   }
 
   // Function to Fetch Expenses from Supabase
-  async function fetchExpenses(listFilter) {
+  async function fetchExpenses() {
     setIsLoading(true)
-    let url;
+    let url = `/api/getExpenses?page=${currentPage}&`;
 
-    // Display List with Category Filter
-    if (listFilter) {
-      url = `/api/getExpenses?category=${encodeURIComponent(listFilter)}&page=${currentPage}`
-      console.log("Filtering by ", listFilter);
-      console.log("url = ", url);
-    } else {
-      url = `/api/getExpenses?page=${currentPage}`;
-    }
+    console.log(categoryFilter)
+    console.log(minAmount)
+    console.log(maxAmount)
+    console.log(startDate)
+    console.log(endDate)
+
+    // Check for filters and modify URL
+    if (categoryFilter) url += `category=${encodeURIComponent(categoryFilter)}&`;
+    if (minAmount) url += `minAmount=${minAmount}&`;
+    if (maxAmount) url += `maxAmount=${maxAmount}&`;
+    if (startDate) url += `startDate=${encodeURIComponent(startDate)}&`;
+    if (endDate) url += `endDate=${encodeURIComponent(endDate)}&`;
+
+    console.log("uri: ", url);
 
     try {
       const res = await fetch(url, {
@@ -156,7 +166,7 @@ function ExpenseListPage() {
       if (data.error) throw new Error(data.error || 'Failed to create expense.');
         
       try {
-        await fetchExpenses(null);
+        await fetchExpenses();
       } catch (err) {
         throw new Error('Expense created, failed to fetch expenses.');
       }
@@ -193,7 +203,7 @@ function ExpenseListPage() {
       if (data.error) throw new Error(data.error || 'Failed to delete expense.');
 
       try {
-        await fetchExpenses(null);
+        await fetchExpenses();
       } catch (err) {
         throw new Error('Expense(s) deleted, failed to fetch expenses.')
       }
@@ -240,7 +250,7 @@ function ExpenseListPage() {
       if (data.error) throw new Error(data.error || 'Failed to edit expense.');
 
       try {
-        await fetchExpenses(null);
+        await fetchExpenses();
       } catch (err) {
         throw new Error('Expense edited, failed to fetch expenses.')
       }
@@ -272,29 +282,25 @@ function ExpenseListPage() {
   }
 
   // Handle Filtered List of Expenses
-  const handleFilter = async (newFilter) => {
+  const handleFilter = async () => {
     setIsLoading(true);
     setMessage(null);
 
-    if (newFilter === "None") {
-      try {
-        await fetchExpenses(null);
-      } catch (err) {
-        setMessage({ type: 'error', text: err.message });
-      }
-    } else {
-      try {
-        setFilter(newFilter);
-        await fetchExpenses(newFilter);
-      } catch (err) {
-        setMessage({ type: 'error', text: err.message });
-      }
-    }
+    try {
+      await fetchExpenses();
 
-    setFilter("");
-    setOpenFilter(false);
-    setIsLoading(false);
-    setMessage({ type: 'success', text: 'Filter applied!' });
+      setMessage({ type: 'success', text: 'Filter applied!' });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      setCategoryFilter("");
+      setMinAmount("");
+      setMaxAmount("");
+      setStartdate("");
+      setEndDate("");
+      setOpenFilter(false);
+      setIsLoading(false);
+    }
   }
 
   // Open Detailed View Modal
@@ -442,10 +448,11 @@ function ExpenseListPage() {
         {openFilter && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
             <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+                <h1 className='text-blue-500 self-center text-2xl font-bold'>Filters</h1>
                 <select
-                  value={filter}
-                  onChange={(e) => handleFilter(e.target.value)}
-                  className='text-blue-700'
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className='bg-gray-400'
                   required
                 >
                   <option value="">Select Category</option>
@@ -454,6 +461,38 @@ function ExpenseListPage() {
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
+                <input
+                  type="number"
+                  placeholder="min amount"
+                  value={minAmount}
+                  onChange={(e) => setMinAmount(e.target.value)}
+                  className='bg-gray-400'
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="max amount"
+                  value={maxAmount}
+                  onChange={(e) => setMaxAmount(e.target.value)}
+                  className='bg-gray-400'
+                  required
+                />
+                {/* <input
+                  type="date-local"
+                  id="date"
+                  value={startDate}
+                  onChange={(e) => setStartdate(e.target.value)}
+                  className="bg-gray-400"
+                />
+                <input
+                  type="date-local"
+                  id="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="bg-gray-400"
+                /> */}
+                <button onClick={handleFilter} className='bg-blue-500'>Apply</button>
+                <button onClick={() => setOpenFilter(false)} className='bg-red-500'>Close</button>
             </div>
           </div>
         )}
