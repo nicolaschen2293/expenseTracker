@@ -83,6 +83,7 @@ function ExpenseListPage() {
 
   // Function to Fetch Expenses from Supabase
   async function fetchExpenses(listFilter) {
+    setIsLoading(true)
     let url;
 
     // Display List with Category Filter
@@ -106,14 +107,12 @@ function ExpenseListPage() {
       if (data.error) throw new Error(data.error || 'Failed to fetch expenses.');
 
       setExpenses(data.data);
-      console.log("total = ", data.total);
       setTotalPages(Math.ceil(data.total / 10));
-      console.log("total pages = ", totalPages);
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
       throw err;
     } finally {
-
+      setIsLoading(false);
     }
   }
 
@@ -163,6 +162,7 @@ function ExpenseListPage() {
       setAmount("");
       setCategory("");
       setDateTime("");
+      setCurrentPage(1);
       setIsLoading(false);
     }
   };
@@ -451,11 +451,13 @@ function ExpenseListPage() {
           </div>
         )}
         <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(1)} disabled={currentPage == 1}>&laquo;</button>
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage <= 1}>Prev</button>
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 2)} disabled={currentPage <= 2}>{currentPage > 2 ? currentPage - 2 : ""}</button>
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 2)} disabled={currentPage + 2 > totalPages}>{currentPage + 2}</button>
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 3)} disabled={currentPage + 3 > totalPages}>{currentPage + 3}</button>
+          {currentPage > 2 && <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage - 2)} disabled={currentPage <= 2}>{currentPage > 2 ? currentPage - 2 : ""}</button>}
+          {currentPage + 2 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 2)} disabled={currentPage + 2 > totalPages}>{currentPage + 2}</button>}
+          {currentPage + 3 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 3)} disabled={currentPage + 3 > totalPages}>{currentPage + 3}</button>}
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage + 1 > totalPages}>Next</button>
+          <button className='text-blue-400 disabled:text-gray-400' onClick={() => setCurrentPage(totalPages)} disabled={currentPage == totalPages}>&raquo;</button>
         </div>
         <div className="fixed flex flex-col bottom-10 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           {isLoading && <div className="text-blue-600 self-center">Loading...</div>}
