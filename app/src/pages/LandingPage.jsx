@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../utils/supabase.js";
 import { useNavigate } from 'react-router-dom'
 
@@ -9,6 +9,17 @@ function LandingPage() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        navigate('/expenses');
+      }
+    }
+
+    getSession()
+  }, [])
 
   // Handle Sign In / Sign Up
   const handleSubmit = async () => {
