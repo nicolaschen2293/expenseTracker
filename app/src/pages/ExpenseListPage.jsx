@@ -97,12 +97,6 @@ function ExpenseListPage() {
     setIsLoading(true)
     let url = `/api/getExpenses?page=${currentPage}&`;
 
-    console.log(categoryFilter)
-    console.log(minAmount)
-    console.log(maxAmount)
-    console.log(startDate)
-    console.log(endDate)
-
     // Check for filters and modify URL
     if (categoryFilter) url += `category=${encodeURIComponent(categoryFilter)}&`;
     if (minAmount) url += `minAmount=${minAmount}&`;
@@ -461,32 +455,38 @@ function ExpenseListPage() {
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
+                <label htmlFor='minamount' className='text-gray-400'>Min Amount:</label>
                 <input
                   type="number"
-                  placeholder="min amount"
+                  id='minamount'
+                  placeholder="0"
                   value={minAmount}
                   onChange={(e) => setMinAmount(e.target.value)}
                   className='bg-gray-400'
                   required
                 />
+                <label htmlFor='maxamount' className='text-gray-400'>Max Amount:</label>
                 <input
                   type="number"
-                  placeholder="max amount"
+                  id='maxamount'
+                  placeholder="-"
                   value={maxAmount}
                   onChange={(e) => setMaxAmount(e.target.value)}
                   className='bg-gray-400'
                   required
                 />
+                <label htmlFor='startdate' className='text-gray-400'>Start Date:</label>
                 <input
                   type="date"
-                  id="date"
+                  id="startdate"
                   value={startDate}
                   onChange={(e) => setStartdate(e.target.value)}
                   className="bg-gray-400"
                 />
+                <label htmlFor='enddate' className='text-gray-400'>End Date:</label>
                 <input
                   type="date"
-                  id="date"
+                  id="enddate"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   className="bg-gray-400"
