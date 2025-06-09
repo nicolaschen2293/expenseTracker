@@ -193,8 +193,8 @@ function ExpenseListPage() {
       setAmount("");
       setCategory("");
       setDateTime("");
-      setCurrentPage(1);
       setIsLoading(false);
+      await clearFilter();
     }
   };
 
@@ -225,9 +225,9 @@ function ExpenseListPage() {
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
     } finally {
-      setCurrentPage(1);
       setSelectedExpenses([]);
       setIsLoading(false);
+      await clearFilter();
     }
     
   }
@@ -278,8 +278,8 @@ function ExpenseListPage() {
       setAmount("");
       setCategory("");
       setDateTime("");
-      setCurrentPage(1);
       setIsLoading(false);
+      await clearFilter();
     }
   }
 
