@@ -1,12 +1,61 @@
-# React + Vite
+# Expense Tracker App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack expense tracking application built with Supabase, React, and Node.js. This project uses Vercel for local development and deployment.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- User authentication (Supabase)
+- CRUD operations on expenses
+- Pagination, filtering, and sorting
+- Expense Visualization with Recharts
+- Row Level Security (RLS) using Supabase policies
+- Secure API routes with token verification
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📦 Technologies Used
+
+- React
+- Supabase
+- Node.js (API routes)
+- Vercel (for local + production deployment)
+
+---
+
+## 🔧 Getting Started
+
+Follow the steps below to run the project on your local machine using `vercel dev`.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/nicolaschen2293/expenseTracker.git
+cd expenseTracker
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+
+# Make Install vercel for development environment
+npm install -g vercel
+```
+
+### 3. Environment variables
+
+For testing purposes, .env file is provided in the repository, along with the Supabase Anon Key and Supabase URL.
+
+### 4. Run the development server
+
+```bash
+vercel dev
+```
+
+Answer 'n' or 'No' when asked “Do you want to link this project?”
+
+# Author
+
+Developed by Nicolas Chen as an Assignment for a Full-Stack Engineer Role in Samsung Research indonesia

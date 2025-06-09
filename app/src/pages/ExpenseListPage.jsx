@@ -558,25 +558,6 @@ function ExpenseListPage() {
             </div>
           </div>
         )}
-        {/* {openSorting && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
-              <select
-                  value={sorting}
-                  onChange={(e) => setSorting(e.target.value)}
-                  className='bg-gray-400'
-                  required
-                >
-                  <option value="">Select Sorting</option>
-                  <option value="date descending">Date Descending</option>
-                  <option value="date ascending">Date Ascending</option>
-                  <option value="amount ascending">Amount Ascending</option>
-                  <option value="amount descending">Amount Descending</option>
-                </select>
-                <button onClick={() => setOpenSorting(false)} className='bg-red-500'>Close</button>
-            </div>
-          </div>
-        )} */}
         <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-currentPage+1)} disabled={currentPage == 1}>&laquo;</button>
           <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-1)} disabled={currentPage <= 1}>Prev</button>
