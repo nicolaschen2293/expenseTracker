@@ -103,6 +103,7 @@ function ExpenseListPage() {
     setIsLoading(true)
     if (openSorting) setOpenSorting(false);
 
+    console.log('page = ', page)
     let url = `/api/getExpenses?page=${page}&`;
 
     // Check for filters and modify URL
@@ -179,7 +180,7 @@ function ExpenseListPage() {
       if (data.error) throw new Error(data.error || 'Failed to create expense.');
         
       try {
-        await fetchExpenses();
+        await fetchExpenses("","","","","","",1);
       } catch (err) {
         throw new Error('Expense created, failed to fetch expenses.');
       }
@@ -216,7 +217,7 @@ function ExpenseListPage() {
       if (data.error) throw new Error(data.error || 'Failed to delete expense.');
 
       try {
-        await fetchExpenses();
+        await fetchExpenses("","","","","","",1);
       } catch (err) {
         throw new Error('Expense(s) deleted, failed to fetch expenses.')
       }
@@ -224,6 +225,7 @@ function ExpenseListPage() {
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
     } finally {
+      setCurrentPage(1);
       setSelectedExpenses([]);
       setIsLoading(false);
     }
@@ -263,7 +265,7 @@ function ExpenseListPage() {
       if (data.error) throw new Error(data.error || 'Failed to edit expense.');
 
       try {
-        await fetchExpenses();
+        await fetchExpenses("","","","","","",1);
       } catch (err) {
         throw new Error('Expense edited, failed to fetch expenses.')
       }
@@ -276,7 +278,7 @@ function ExpenseListPage() {
       setAmount("");
       setCategory("");
       setDateTime("");
-
+      setCurrentPage(1);
       setIsLoading(false);
     }
   }
@@ -302,7 +304,7 @@ function ExpenseListPage() {
     setCurrentPage(1);
 
     try {
-      await fetchExpenses(1);
+      await fetchExpenses(categoryFilter, minAmount, maxAmount, startDate, endDate, sorting, 1);
       setMessage({ type: 'success', text: 'Filter applied!' });
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
@@ -335,7 +337,11 @@ function ExpenseListPage() {
     setCurrentPage(nextPage);
 
     try {
-      await fetchExpenses(nextPage);
+      if (!filtered) {
+        await fetchExpenses("","","","","","",nextPage);
+      } else {
+        await fetchExpenses(categoryFilter, minAmount, maxAmount, startDate, endDate, sorting, nextPage);
+      }
     } catch (err) {
       setMessage({ type: 'error', text: err.message });
     }

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     // .order('date', { ascending: false }) 
 
   // 5. Apply filters
-  const { category, minAmount, maxAmount, startDate, endDate, page = 1, sorting } = req.query;
+  const { category, minAmount, maxAmount, startDate, endDate, page = 1, sorting, all } = req.query;
   const offset = (parseInt(page, 10) - 1) * 10;
 
   if (category) query = query.eq("category", category);
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   if (endDate) query = query.lte("date", endDate);
 
   // 6. Set page
-  query = query.range(offset, offset + 9);
+  if (!all) query = query.range(offset, offset + 9);
 
   // 7. Set sorting
   console.log("sorting: ", sorting);

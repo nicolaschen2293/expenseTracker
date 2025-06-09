@@ -21,6 +21,8 @@ function StatisticsPage() {
 
   useEffect(() => {
     if (token) fetchExpenses();
+
+    console.log(expenses)
   }, [token]);
 
   async function getToken() {
@@ -29,14 +31,14 @@ function StatisticsPage() {
   }
 
   async function fetchExpenses() {
-    const res = await fetch("/api/getExpenses", {
+    const res = await fetch("/api/getExpenses?all=true&sorting=datedescending&", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     const data = await res.json();
-    setExpenses(data);
+    setExpenses(data.data);
   }
 
   const back = () => {
