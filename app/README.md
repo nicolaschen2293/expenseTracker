@@ -62,14 +62,31 @@ npm install
 cd ..
 
 vercel dev
-# Select your Vercel scope (personal or team)
-# Choose to create new project or use an existing one
-# Accept default settings unless you know otherwise
-# Start the development server
-# Install any missing dependencies with
-
-npm install --save-dev "missing-dependency-name"
 ```
+# Use the following answer
+
+? Set up and develop “~\expenseTracker”? yes
+# Answer yes
+
+Which scope should contain your project?
+# Select your project scope
+
+Found project “account-name-projects/expense-tracker”. Link to it?
+Link to different existing project? no 
+# Choose 'no' to create new project or 'yes' use an existing one
+
+What’s your project’s name? expense-tracker-test
+# Enter your project name (e.g. expense-tracker-test)
+
+Auto-detected Project Settings (Vite):
+- Build Command: vite build
+- Development Command: vite --port $PORT
+- Install Command: `yarn install`, `pnpm install`, `npm install`, or `bun install`
+- Output Directory: dist
+? Want to modify these settings? no
+# Accept default settings unless you know otherwise
+# Ensure that port 3000 is not used
+# Follow the link to the development server
 
 - **Alternatively, you can use the deployed app on Vercel: https://expense-tracker-wheat-tau.vercel.app/ for testing**
 
