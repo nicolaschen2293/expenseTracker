@@ -10,17 +10,6 @@ function LandingPage() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        navigate('/expenses');
-      }
-    }
-
-    getSession()
-  }, [])
-
   // Handle Sign In / Sign Up
   const handleSubmit = async () => {
     setErrorMsg('');
@@ -80,14 +69,14 @@ function LandingPage() {
         <div className="flex justify-between bg-black">
           <button
             onClick={() => setAction('Sign Up')}
-            className={`text-sm ${action === 'Sign Up' ? 'font-bold' : ''}`}
+            className={`text-sm ${action === 'Sign Up' ? 'font-bold' : ''} text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer text-2xl mb-1`}
             disabled={action === 'Sign Up'}
           >
             Sign Up
           </button>
           <button
             onClick={() => setAction('Log In')}
-            className={`text-sm ${action === 'Log In' ? 'font-bold' : ''}`}
+            className={`text-sm ${action === 'Log In' ? 'font-bold' : ''} text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer text-2xl mb-1`}
             disabled={action === 'Log In'}
           >
             Log In
