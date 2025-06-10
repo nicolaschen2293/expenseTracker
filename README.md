@@ -30,14 +30,14 @@ This project uses [vercel dev](https://vercel.com/docs/cli/dev) to emulate both 
 
 Follow the steps below to run the project on your local machine using `vercel dev`.
 
-### 1. Clone the repository
+# 1. Clone the repository
 
 git clone https://github.com/nicolaschen2293/expenseTracker.git
 cd expenseTracker
 
-### 2. Set up Vercel
+# 2. Set up Vercel
 
-# Install vercel for development environment
+### Install vercel for development environment
 npm install -g vercel
 
 - **Create a Vercel account**
@@ -47,33 +47,33 @@ Sign up at [https://vercel.com/signup](https://vercel.com/signup)
 
 - **Log into Vercel CLI**
 
-# Run these commands
+### Run these commands
 vercel login
-# Enter your email or Github account when prompted
+### Enter your email or Github account when prompted
 
-# Go to the /app directory and install dependencies
+### Go to the /app directory and install dependencies
 cd app
 npm install
 
-# Go back to root
+### Go back to root
 cd ..
 
 vercel dev
 
-# Use the following answer
+### Use the following answer
 
 ? Set up and develop “~\expenseTracker”? yes
-# Answer yes
+### Answer yes
 
 Which scope should contain your project?
-# Select your project scope
+### Select your project scope
 
 Found project “account-name-projects/expense-tracker”. Link to it?
 Link to different existing project? no 
-# Choose 'no' to create new project or 'yes' use an existing one
+### Choose 'no' to create new project or 'yes' use an existing one
 
 What’s your project’s name? expense-tracker-test
-# Enter your project name (e.g. expense-tracker-test)
+### Enter your project name (e.g. expense-tracker-test)
 
 Auto-detected Project Settings (Vite):
 - Build Command: vite build
@@ -81,17 +81,17 @@ Auto-detected Project Settings (Vite):
 - Install Command: `yarn install`, `pnpm install`, `npm install`, or `bun install`
 - Output Directory: dist
 ? Want to modify these settings? no
-# Accept default settings unless you know otherwise
-# Ensure that port 3000 is not used
-# Follow the link to the development server
+### Accept default settings unless you know otherwise
+### Ensure that port 3000 is not used
+### Follow the link to the development server
 
 - **Alternatively, you can use the deployed app on Vercel: https://expense-tracker-wheat-tau.vercel.app/ for testing**
 
-### 3. Environment variables
+# 3. Environment variables
 
 For testing purposes, .env file is provided in the repository (inside /app), along with the Supabase Anon Key and Supabase URL.
 
-### 4. Log In / Sign Up into the app
+# 4. Log In / Sign Up into the app
 
 Use the developer account below or sign up to create an account:
 
@@ -102,4 +102,4 @@ Keep in mind that this account will not be able to use the "forgot password" fea
 
 # Author
 
-Developed by Nicolas Chen as an assignment for a Full-Stack Engineer Role in Samsung Research indonesia
+## Developed by Nicolas Chen as an assignment for a Full-Stack Engineer Role in Samsung Research indonesia
