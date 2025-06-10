@@ -9,7 +9,7 @@ function ExpenseListPage() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [dateTime, setDateTime] = useState("");
+  const [dateTime, setDateTime] = useState(DateTime.now().setZone("Asia/Jakarta"));
 
   // List of Expenses to Display
   const [expenses, setExpenses] = useState([]);
@@ -194,7 +194,7 @@ function ExpenseListPage() {
       setTitle("");
       setAmount("");
       setCategory("");
-      setDateTime("");
+      setDateTime(DateTime.now().setZone("Asia/Jakarta"));
       setIsLoading(false);
       await clearFilter();
     }
@@ -240,7 +240,7 @@ function ExpenseListPage() {
     setTitle(detailedExpense.title);
     setAmount(detailedExpense.amount);
     setCategory(detailedExpense.category);
-    setDateTime(DateTime.fromISO(detailedExpense.date).setZone('Asia/Jakarta').toFormat("yyyy-MM-dd'T'HH:mm"));
+    setDateTime(DateTime.fromISO(detailedExpense.date).setZone('Asia/Jakarta'));
     setOpenEdit(true);
   }
 
@@ -279,7 +279,7 @@ function ExpenseListPage() {
       setTitle("");
       setAmount("");
       setCategory("");
-      setDateTime("");
+      setDateTime(DateTime.now().setZone("Asia/Jakarta"));
       setIsLoading(false);
       await clearFilter();
     }
@@ -430,7 +430,9 @@ function ExpenseListPage() {
                 type="datetime-local"
                 id="datetime"
                 value={dateTime.toFormat("yyyy-MM-dd'T'HH:mm")}
-                onChange={(e) => setDateTime(e.target.value)}
+                onChange={(e) =>
+                  setDateTime(DateTime.fromISO(e.target.value, { zone: "Asia/Jakarta" }))
+                }
                 className="bg-gray-600"
               />
               <button onClick={handleSubmit} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Add Expense</button>
@@ -438,7 +440,7 @@ function ExpenseListPage() {
                 setTitle("");
                 setAmount("");
                 setCategory("");
-                setDateTime("");
+                setDateTime(DateTime.now().setZone("Asia/Jakarta"));
                 setOpenAddExpense(false);
                 }} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
             </div>
@@ -490,8 +492,10 @@ function ExpenseListPage() {
               <input
                 type="datetime-local"
                 id="datetime"
-                value={dateTime}
-                onChange={(e) => setDateTime(e.target.value)}
+                value={dateTime.toFormat("yyyy-MM-dd'T'HH:mm")}
+                onChange={(e) =>
+                  setDateTime(DateTime.fromISO(e.target.value, { zone: "Asia/Jakarta" }))
+                }
                 className="bg-gray-600"
               />
               <button onClick={handleEdit} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Edit Expense</button>
@@ -499,7 +503,7 @@ function ExpenseListPage() {
                 setTitle("");
                 setAmount("");
                 setCategory("");
-                setDateTime("");
+                setDateTime(DateTime.now().setZone("Asia/Jakarta"));
                 setOpenEdit(false)
                 }} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
             </div>
@@ -598,8 +602,7 @@ function ExpenseListPage() {
         <div className="fixed flex bottom-0 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           <button onClick={() => {
             setOpenAddExpense(true)
-            const now = DateTime.now().setZone('Asia/Jakarta');
-            setDateTime(now);
+            setDateTime(DateTime.now().setZone("Asia/Jakarta"));
             }} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Add</button>
           <button onClick={() => setOpenFilter(true)} className='border-2 border-blue-500 hover:bg-blue-500 hover:border-white cursor-pointer'>Filter</button>
           {filtered && <button onClick={clearFilter} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Clear Filter</button>}
