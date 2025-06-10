@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabase';
+import { DateTime } from 'luxon';
 
 function ExpenseListPage() {
 
@@ -163,7 +164,8 @@ function ExpenseListPage() {
     setMessage(null);
 
     try {
-      const dateTimeObj = new Date(dateTime);
+      console.log(dateTime);
+      console.log(typeof dateTime);
 
       const res = await fetch("/api/addExpense", {
         method: "POST",
@@ -171,7 +173,7 @@ function ExpenseListPage() {
           "Content-Type": "application/json", 
           Authorization: `Bearer ${token}` 
         },
-        body: JSON.stringify({ title, amount: parseFloat(amount), category, dateTimeObj}),
+        body: JSON.stringify({ title, amount: parseFloat(amount), category, dateTimeObj: dateTime.toUTC().toISO()}),
       });
 
       const data = await res.json();
@@ -238,7 +240,7 @@ function ExpenseListPage() {
     setTitle(detailedExpense.title);
     setAmount(detailedExpense.amount);
     setCategory(detailedExpense.category);
-    setDateTime(new Date(detailedExpense.date).toISOString().slice(0, 16));
+    setDateTime(DateTime.fromISO(detailedExpense.date).setZone('Asia/Jakarta').toFormat("yyyy-MM-dd'T'HH:mm"));
     setOpenEdit(true);
   }
 
@@ -426,7 +428,7 @@ function ExpenseListPage() {
               <input
                 type="datetime-local"
                 id="datetime"
-                value={dateTime}
+                value={dateTime.toFormat("yyyy-MM-dd'T'HH:mm")}
                 onChange={(e) => setDateTime(e.target.value)}
                 className="bg-gray-400"
               />
@@ -485,7 +487,13 @@ function ExpenseListPage() {
                 className="bg-gray-400"
               />
               <button onClick={handleEdit} className='bg-green-500'>Edit Expense</button>
-              <button onClick={() => setOpenEdit(false)} className='bg-red-500'>Cancel</button>
+              <button onClick={() => {
+                setTitle("");
+                setAmount("");
+                setCategory("");
+                setDateTime("");
+                setOpenEdit(false)
+                }} className='bg-red-500'>Cancel</button>
             </div>
           </div>
         )}
@@ -582,7 +590,7 @@ function ExpenseListPage() {
         <div className="fixed flex bottom-0 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           <button onClick={() => {
             setOpenAddExpense(true)
-            const now = new Date().toISOString().slice(0, 16);
+            const now = DateTime.now().setZone('Asia/Jakarta');
             setDateTime(now);
             }} className='bg-green-500 w-max'>+</button>
           <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
