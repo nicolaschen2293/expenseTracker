@@ -37,10 +37,10 @@ git clone https://github.com/nicolaschen2293/expenseTracker.git
 cd expenseTracker
 ```
 
-### 3. Set up Vercel
+### 2. Set up Vercel
 
 ```bash
-# Make Install vercel for development environment
+# Install vercel for development environment
 npm install -g vercel
 ```
 - **Create a Vercel account**
@@ -52,9 +52,9 @@ Sign up at [https://vercel.com/signup](https://vercel.com/signup)
 
 ```bash
 vercel login
-# Enter email or Github account when prompted
+# Enter your email or Github account when prompted
 
-# go to /app and install dependencies
+# go to the /app directory and install dependencies
 cd app
 npm install
 
@@ -90,13 +90,13 @@ Auto-detected Project Settings (Vite):
 
 - **Alternatively, you can use the deployed app on Vercel: https://expense-tracker-wheat-tau.vercel.app/ for testing**
 
-### 4. Environment variables
+### 3. Environment variables
 
-For testing purposes, .env file is provided in the repository, along with the Supabase Anon Key and Supabase URL.
+For testing purposes, .env file is provided in the repository (inside /app), along with the Supabase Anon Key and Supabase URL.
 
-### 5. Log In / Sign Up into the app
+### 4. Log In / Sign Up into the app
 
-Use the following developer account or sign up to create an account:
+Use the developer account below or sign up to create an account:
 
 email   : dev@developer.com
 password: dev123
