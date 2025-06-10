@@ -520,7 +520,6 @@ function ExpenseListPage() {
                   required
                 >
                   <option value="">Select Category</option>
-                  <option value="None">None</option>
                   {categoryOptions.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
