@@ -383,7 +383,7 @@ function ExpenseListPage() {
                     type="checkbox"
                     checked={selectedExpenses.includes(expense.id)}
                     onChange={() => handleCheckboxChange(expense.id)}
-                    className="mt-3"
+                    className="mt-2 mr-2 w-5 h-5"
                   />
                 </td>
                 <td className="px-4 py-2">{expense.title}</td>
@@ -395,13 +395,14 @@ function ExpenseListPage() {
       </div>
         {openAddExpense && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+            <div className="flex flex-col bg-[#242424] text-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+              <h1 className='text-blue-500 self-center text-2xl font-bold'>Create Expense</h1>
               <input
                 type="text"
                 placeholder="Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className='bg-gray-400'
+                className='bg-gray-600'
                 required
               />
               <input
@@ -409,13 +410,13 @@ function ExpenseListPage() {
                 placeholder="Amount"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className='bg-gray-400'
+                className='bg-gray-600'
                 required
               />
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className='bg-gray-400'
+                className='bg-gray-600'
                 required
               >
                 <option value="">Select Category</option>
@@ -428,34 +429,35 @@ function ExpenseListPage() {
                 id="datetime"
                 value={dateTime}
                 onChange={(e) => setDateTime(e.target.value)}
-                className="bg-gray-400"
+                className="bg-gray-600"
               />
-              <button onClick={handleSubmit} className='bg-green-500'>Add Expense</button>
-              <button onClick={() => setOpenAddExpense(false)} className='bg-red-500'>Cancel</button>
+              <button onClick={handleSubmit} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Add Expense</button>
+              <button onClick={() => setOpenAddExpense(false)} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
             </div>
           </div>
         )}
         {openDetailedView && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-            <div className="flex flex-col text-black bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
-              <h1 className='self-center text-2xl'>{detailedExpense.title}</h1>
+            <div className="flex flex-col bg-[#242424] p-6 rounded-lg shadow-lg max-w-full gap-2">
+              <h1 className='text-blue-500 self-center text-2xl font-bold'>{detailedExpense.title}</h1>
               <h2>Expense Amount  : Rp.{detailedExpense.amount},-</h2>
               <h2>Expense Category: {detailedExpense.category}</h2>
               <h2>Done on         : {new Date(detailedExpense.date).toLocaleString()}</h2>
-              <button onClick={() => handleOpenEdit()} className='bg-green-500'>Edit</button>
-              <button onClick={() => setOpenDetailedView(false)} className='bg-red-500'>Close</button>
+              <button onClick={() => handleOpenEdit()} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Edit</button>
+              <button onClick={() => setOpenDetailedView(false)} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Close</button>
             </div>
           </div>
         )}
         {openEdit && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+            <div className="flex flex-col bg-[#242424] p-6 rounded-lg shadow-lg max-w-full gap-2">
+              <h1 className='text-blue-500 self-center text-2xl font-bold'>Edit Expense</h1>
               <input
                 type="text"
                 placeholder={detailedExpense.title}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className='bg-gray-400'
+                className='bg-gray-600'
                 required
               />
               <input
@@ -463,13 +465,13 @@ function ExpenseListPage() {
                 placeholder={detailedExpense.amount}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className='bg-gray-400'
+                className='bg-gray-600'
                 required
               />
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className='bg-gray-400'
+                className='bg-gray-600'
                 required
               >
                 <option value="">Select Category</option>
@@ -482,21 +484,21 @@ function ExpenseListPage() {
                 id="datetime"
                 value={dateTime}
                 onChange={(e) => setDateTime(e.target.value)}
-                className="bg-gray-400"
+                className="bg-gray-600"
               />
-              <button onClick={handleEdit} className='bg-green-500'>Edit Expense</button>
-              <button onClick={() => setOpenEdit(false)} className='bg-red-500'>Cancel</button>
+              <button onClick={handleEdit} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Edit Expense</button>
+              <button onClick={() => setOpenEdit(false)} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
             </div>
           </div>
         )}
         {openFilter && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-            <div className="flex flex-col bg-white p-6 rounded-lg shadow-lg max-w-full gap-2">
+            <div className="flex flex-col bg-[#242424] p-6 rounded-lg shadow-lg max-w-full gap-2">
                 <h1 className='text-blue-500 self-center text-2xl font-bold'>Filters</h1>
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className='bg-gray-400'
+                  className='bg-gray-600'
                   required
                 >
                   <option value="">Select Category</option>
@@ -512,7 +514,7 @@ function ExpenseListPage() {
                   placeholder="0"
                   value={minAmount}
                   onChange={(e) => setMinAmount(e.target.value)}
-                  className='bg-gray-400'
+                  className='bg-gray-600'
                   required
                 />
                 <label htmlFor='maxamount' className='text-gray-400'>Max Amount:</label>
@@ -522,7 +524,7 @@ function ExpenseListPage() {
                   placeholder="-"
                   value={maxAmount}
                   onChange={(e) => setMaxAmount(e.target.value)}
-                  className='bg-gray-400'
+                  className='bg-gray-600'
                   required
                 />
                 <label htmlFor='startdate' className='text-gray-400'>Start Date:</label>
@@ -531,7 +533,7 @@ function ExpenseListPage() {
                   id="startdate"
                   value={startDate}
                   onChange={(e) => setStartdate(e.target.value)}
-                  className="bg-gray-400"
+                  className="bg-gray-600"
                 />
                 <label htmlFor='enddate' className='text-gray-400'>End Date:</label>
                 <input
@@ -539,12 +541,12 @@ function ExpenseListPage() {
                   id="enddate"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="bg-gray-400"
+                  className="bg-gray-600"
                 />
                 <select
                   value={sorting}
                   onChange={(e) => setSorting(e.target.value)}
-                  className='bg-gray-400'
+                  className='bg-gray-600'
                   required
                 >
                   <option value="">Sort by</option>
@@ -553,19 +555,19 @@ function ExpenseListPage() {
                   <option value="amount ascending">Amount Ascending</option>
                   <option value="amount descending">Amount Descending</option>
                 </select>
-                <button onClick={handleFilter} className='bg-blue-500'>Apply</button>
-                <button onClick={() => setOpenFilter(false)} className='bg-red-500'>Close</button>
+                <button onClick={handleFilter} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Apply</button>
+                <button onClick={() => setOpenFilter(false)} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Close</button>
             </div>
           </div>
         )}
-        <div className="fixed flex bottom-15 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-currentPage+1)} disabled={currentPage == 1}>&laquo;</button>
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-1)} disabled={currentPage <= 1}>Prev</button>
-          {currentPage > 2 && <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(-2)} disabled={currentPage <= 2}>{currentPage > 2 ? currentPage - 2 : ""}</button>}
-          {currentPage + 2 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(2)} disabled={currentPage + 2 > totalPages}>{currentPage + 2}</button>}
-          {currentPage + 3 <= totalPages && <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(3)} disabled={currentPage + 3 > totalPages}>{currentPage + 3}</button>}
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(1)} disabled={currentPage + 1 > totalPages}>Next</button>
-          <button className='text-blue-400 disabled:text-gray-400' onClick={() => handlePageChange(totalPages - currentPage)} disabled={currentPage == totalPages}>&raquo;</button>
+        <div className="fixed flex bottom-20 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
+          <button className='text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer text-2xl mb-1' onClick={() => handlePageChange(-currentPage+1)} disabled={currentPage == 1}>&laquo;</button>
+          <button className='text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer' onClick={() => handlePageChange(-1)} disabled={currentPage <= 1}>Prev</button>
+          {currentPage > 2 && <button className='text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer' onClick={() => handlePageChange(-2)} disabled={currentPage <= 2}>{currentPage > 2 ? currentPage - 2 : ""}</button>}
+          {currentPage + 2 <= totalPages && <button className='text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer' onClick={() => handlePageChange(2)} disabled={currentPage + 2 > totalPages}>{currentPage + 2}</button>}
+          {currentPage + 3 <= totalPages && <button className='text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer' onClick={() => handlePageChange(3)} disabled={currentPage + 3 > totalPages}>{currentPage + 3}</button>}
+          <button className='text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer' onClick={() => handlePageChange(1)} disabled={currentPage + 1 > totalPages}>Next</button>
+          <button className='text-blue-400 disabled:text-gray-400 hover:text-white cursor-pointer text-2xl mb-1' onClick={() => handlePageChange(totalPages - currentPage)} disabled={currentPage == totalPages}>&raquo;</button>
         </div>
         <div className="fixed flex flex-col bottom-10 bg-[#242424] gap-2 left-0 w-full py-4 justify-center items-center">
           {isLoading && <div className="text-blue-600 self-center">Loading...</div>}
@@ -584,12 +586,12 @@ function ExpenseListPage() {
             setOpenAddExpense(true)
             const now = new Date().toISOString().slice(0, 16);
             setDateTime(now);
-            }} className='bg-green-500 w-max'>+</button>
-          <button onClick={() => setOpenFilter(true)} className='bg-yellow-500'>Filter</button>
-          {filtered && <button onClick={clearFilter} className='bg-purple-500'>Clear Filter</button>}
-          {selectedExpenses.length > 0 && <button onClick={handleDelete} className='bg-red-500'>Delete Selected</button>}
-          {token && <button className='bg-blue-500 w-max' onClick={goToStatistics}>Statistics</button>}
-          {token && <button className='bg-red-500 w-max' onClick={handleLogOut}>Log Out</button>}
+            }} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Add</button>
+          <button onClick={() => setOpenFilter(true)} className='border-2 border-blue-500 hover:bg-blue-500 hover:border-white cursor-pointer'>Filter</button>
+          {filtered && <button onClick={clearFilter} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Clear Filter</button>}
+          {selectedExpenses.length > 0 && <button onClick={handleDelete} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Delete</button>}
+          {token && <button className='border-2 border-blue-500 hover:bg-blue-500 hover:border-white cursor-pointer' onClick={goToStatistics}>Statistics</button>}
+          {token && <button className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer' onClick={handleLogOut}>Log Out</button>}
         </div>
     </div>
   )
