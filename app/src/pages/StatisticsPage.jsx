@@ -94,12 +94,12 @@ function StatisticsPage() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6666', '#A28FD0'];
 
   return (
-    <div className='flex flex-col items-center min-h-screen content-center gap-8 justify-center text-blue-500 p-4'>
+    <div className='flex flex-col items-center min-h-screen content-center justify-center text-blue-500 p-4'>
       <h1 className='text-xl font-semibold'>Statistics</h1>
 
       {/* Line Chart for Daily Expenses */}
       <h2 className='text-lg mb-2 mt-4 self-center'>Daily Expenses</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="60%" height={300}>
         <LineChart data={dailyExpenses} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
@@ -111,7 +111,7 @@ function StatisticsPage() {
 
       {/* Bar Chart for Monthly Expenses */}
       <h2 className='text-lg mb-2 mt-4 self-center'>Monthly Expenses</h2>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="60%" height={300}>
         <BarChart data={monthlyExpenses} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
