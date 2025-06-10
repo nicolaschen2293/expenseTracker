@@ -62,7 +62,7 @@ function LandingPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#242424]">
       <div className="bg-black p-6 rounded shadow-md w-80">
         <h1 className="text-2xl font-bold mb-4 text-center">{action}</h1>
 
@@ -86,7 +86,7 @@ function LandingPage() {
         {errorMsg && <div className="text-red-500 mb-2 text-sm">{errorMsg}</div>}
 
         <button
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mb-2"
+          className="w-full rounded mb-2 border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer"
           onClick={handleSubmit}
         >
           {action}
@@ -109,8 +109,8 @@ function LandingPage() {
           </button>
         </div>
 
-        {/* <button className='bg-red-500' onClick={handleLogOut}>Log Out</button> */}
-        <button className="bg-blue-500" onClick={handleForgotPassword}>Forgot Password</button>
+        {/* Removed as it was causing too much problems */}
+        {/* <button className="bg-blue-500" onClick={handleForgotPassword}>Forgot Password</button> */}
       </div>
     </div>
   );
