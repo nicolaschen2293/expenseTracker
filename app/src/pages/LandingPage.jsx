@@ -47,7 +47,8 @@ function LandingPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#242424]">
-      <div className="bg-black p-6 rounded shadow-md w-80">
+      <div className="bg-black p-6 rounded shadow-md w-100">
+        <h1 className="text-blue-500 font-extrabold text-4xl text-center mb-5">Expense Tracker</h1>
         <h1 className="text-2xl font-bold mb-4 text-center">{action}</h1>
 
         <input
