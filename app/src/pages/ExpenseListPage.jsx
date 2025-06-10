@@ -434,7 +434,13 @@ function ExpenseListPage() {
                 className="bg-gray-600"
               />
               <button onClick={handleSubmit} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Add Expense</button>
-              <button onClick={() => setOpenAddExpense(false)} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
+              <button onClick={() => {
+                setTitle("");
+                setAmount("");
+                setCategory("");
+                setDateTime("");
+                setOpenAddExpense(false);
+                }} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
             </div>
           </div>
         )}
@@ -488,16 +494,14 @@ function ExpenseListPage() {
                 onChange={(e) => setDateTime(e.target.value)}
                 className="bg-gray-600"
               />
-              <button onClick={handleEdit} className='bg-green-500'>Edit Expense</button>
+              <button onClick={handleEdit} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Edit Expense</button>
               <button onClick={() => {
                 setTitle("");
                 setAmount("");
                 setCategory("");
                 setDateTime("");
                 setOpenEdit(false)
-                }} className='bg-red-500'>Cancel</button>
-              <button onClick={handleEdit} className='border-green-500 border-solid border-2 hover:bg-green-500 hover:border-white cursor-pointer'>Edit Expense</button>
-              <button onClick={() => setOpenEdit(false)} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
+                }} className='border-2 border-red-500 hover:border-white hover:bg-red-500 cursor-pointer'>Cancel</button>
             </div>
           </div>
         )}
