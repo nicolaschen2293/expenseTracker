@@ -98,8 +98,6 @@ Use the developer account below or sign up to create an account:
 email   : dev@developer.com
 password: dev123
 
-Keep in mind that this account will not be able to use the "forgot password" feature as it is not a real email. A valid email needs to be used in order for Supabase to send a reset-password link.
-
 # Author
 
 ## Developed by Nicolas Chen as an assignment for a Full-Stack Engineer Role in Samsung Research indonesia
