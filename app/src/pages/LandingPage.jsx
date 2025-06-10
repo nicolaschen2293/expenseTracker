@@ -45,22 +45,6 @@ function LandingPage() {
     }
   };
 
-  // Send Email to User to Reset their Password
-  const handleForgotPassword = async () => {
-    const redirectURL = import.meta.env.VITE_REDIRECT_URL;
-    console.log("redirecting to: ", redirectURL);
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      // Development environment
-      redirectTo: redirectURL,
-    });
-
-    if (error) {
-      setErrorMsg(`Error: ${error.message}`);
-    } else {
-      setErrorMsg('Password reset email sent. Check your inbox.');
-    }
-  }
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#242424]">
       <div className="bg-black p-6 rounded shadow-md w-80">
