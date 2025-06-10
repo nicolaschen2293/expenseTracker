@@ -10,16 +10,16 @@ function LandingPage() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        navigate('/expenses');
-      }
-    }
+  // useEffect(() => {
+  //   const getSession = async () => {
+  //     const { data: { session } } = await supabase.auth.getSession()
+  //     if (session) {
+  //       navigate('/expenses');
+  //     }
+  //   }
 
-    getSession()
-  }, [])
+  //   getSession()
+  // }, [])
 
   // Handle Sign In / Sign Up
   const handleSubmit = async () => {
