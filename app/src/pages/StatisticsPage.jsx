@@ -133,7 +133,7 @@ function StatisticsPage() {
 
         {/* Pie Chart */}
         <div className="w-[400px] flex flex-col justify-center items-center">
-          <h2 className="text-lg text-blue-500 mb-10">Expenses by Category</h2>
+          <h2 className="text-lg text-blue-500 mb-2">Expenses by Category</h2>
           <PieChart width={500} height={500} margin={{ top: 30, right: 40, bottom: 20, left: 20 }}>
             <Pie
               data={pieData}
